@@ -46,8 +46,10 @@ const Node = ({ selected, image, onClick, name, ...props }) => {
       { selected &&
         <Circle ref='selectedCircle' { ...selectedCircleProps } />
       }
-      <Image { ...size } image={ image } onClick={ onClick } />
-      <TextLabel name={ name } />
+      <Group onClick={ onClick }>
+        <Image { ...size } image={ image } />
+        <TextLabel name={ name } />
+      </Group>
     </Group>
   )
 }

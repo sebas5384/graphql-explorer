@@ -17,15 +17,19 @@ const App = ({ handleAddNode,handleAddEdge }) => (
 
 const handleAddNode = ({ dispatch }) => event => {
   const name = prompt('Whats my name?')
-  dispatch(addNode({ name, pos: { x: 50, y: 50 } }))
+  name && dispatch(addNode({ name, pos: { x: 50, y: 50 } }))
 }
 
-const handleAddEdge = ({ dispatch }) => event => {
-  const name = prompt('Name of the relation?', 'PostHasManyComment')
-  dispatch(addEdge({ name }))
+const handleAddEdge = ({ dispatch, nodes }) => event => {
+  const selectedNode = nodes.find(node => node.selected)
+  const defaultName = selectedNode ? selectedNode.name + 'HasMany' : ''
+  const name = prompt('Name of the relation?', defaultName)
+  name && dispatch(addEdge({ name }))
 }
+
+const mapStateToProps = ({ nodes }) => ({ nodes })
 
 export default compose(
-  connect(),
+  connect(mapStateToProps),
   withHandlers({ handleAddNode, handleAddEdge })
 )(App)
