@@ -1,16 +1,20 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'recompose'
-import { Layer, Stage, Line } from 'react-konva'
+import { Layer, Stage } from 'react-konva'
 import windowDimensions from 'react-window-dimensions'
 import Node from '../components/Node'
+import Edge from '../components/Edge'
 
-import { updateNode } from '../store'
+import { updateNode, selectNode } from '../store'
 
 const handleDrag = ({ name, dispatch }) => function (pos) {
   dispatch(updateNode({ name, pos }))
-
   return pos
+}
+
+const handleClick = ({ name, dispatch }) => event => {
+  dispatch(selectNode({ name }))
 }
 
 const Editor = ({ width, height, nodes, edges, dispatch }) => {
@@ -18,31 +22,22 @@ const Editor = ({ width, height, nodes, edges, dispatch }) => {
     position: 'fixed'
   }
 
-  const centralizeLinePoints = points => points.map(pos => pos + 62)
-  const lineDefaultProps = {
-    fill: 'black',
-    stroke: 'black',
-    strokeWidth: 4,
-    tension : 0.6
-  }
-
   return (
     <Stage style={ style } width={ width } height={ height }>
       <Layer>
         { edges.map(({ name, points }) => (
-          <Line
-            key={ name }
-            { ...lineDefaultProps }
-            points={ centralizeLinePoints(points) }
-          />
+          <Edge key={ name } name={ name } points={ points } />
         ))}
-        { nodes.map(({ name, pos }) => (
-            <Node
-              key={ name }
-              draggable dragBoundFunc={ handleDrag({ name, dispatch }) }
-              x={ pos.x }
-              y={ pos.y }
-            />
+        { nodes.map(({ name, pos, selected }) => (
+          <Node
+            key={ name }
+            name={ name }
+            selected={ selected }
+            draggable dragBoundFunc={ handleDrag({ name, dispatch }) }
+            onClick={ handleClick({ name, dispatch }) }
+            x={ pos.x }
+            y={ pos.y }
+          />
         )) }
       </Layer>
     </Stage>
