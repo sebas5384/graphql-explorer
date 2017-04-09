@@ -4249,6 +4249,10 @@ react-scripts@0.9.5:
   optionalDependencies:
     fsevents "1.0.17"
 
+react-window-dimensions@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-window-dimensions/-/react-window-dimensions-1.0.0.tgz#206c4473ed588e13a6649e420b5720f685e83299"
+
 react@^15.5.3:
   version "15.5.3"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.3.tgz#84055382c025dec4e3b902bb61a8697cc79c1258"

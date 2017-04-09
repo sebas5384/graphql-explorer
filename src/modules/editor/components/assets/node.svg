@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="124px" height="124px" viewBox="0 0 124 124" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.3 (12081) - http://www.bohemiancoding.com/sketch -->
+    <title>Desktop HD</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" id="filter-1">
+            <feMorphology radius="2" in="SourceAlpha" operator="dilate" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0913043478 0" in="shadowBlurOuter1" type="matrix" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+        <linearGradient x1="0%" y1="0%" x2="100.833145%" y2="99.8445861%" id="linearGradient-2">
+            <stop stop-color="#3023AE" offset="0%"></stop>
+            <stop stop-color="#C96DD8" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="Desktop-HD" sketch:type="MSArtboardGroup" transform="translate(-832.000000, -778.000000)">
+            <g id="Browser" sketch:type="MSLayerGroup" transform="translate(16.000000, 14.000000)" filter="url(#filter-1)" stroke="#CDCDCD">
+                <rect id="Rectangle-124" sketch:type="MSShapeGroup" x="0" y="0" width="1410" height="995" rx="1"></rect>
+            </g>
+            <g id="Node-Comments-Copy" sketch:type="MSLayerGroup" transform="translate(825.000000, 771.000000)" stroke="url(#linearGradient-2)" stroke-width="5" fill="#FFFFFF">
+                <path d="M68.0493421,125.282895 C99.6585604,125.282895 125.282895,99.6585604 125.282895,68.0493421 C125.282895,36.4401238 99.6585604,10.8157895 68.0493421,10.8157895 C36.4401238,10.8157895 10.8157895,36.4401238 10.8157895,68.0493421 C10.8157895,99.6585604 36.4401238,125.282895 68.0493421,125.282895 Z" id="Structure" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>

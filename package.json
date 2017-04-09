@@ -9,6 +9,7 @@
     "react-dom": "^15.5.3",
     "react-konva": "^1.1.2",
     "react-redux": "^5.0.3",
+    "react-window-dimensions": "^1.0.0",
     "recompose": "^0.23.0",
     "redux": "^3.6.0",
     "redux-actions": "0.13.0",
