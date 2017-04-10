@@ -25,8 +25,8 @@ const Editor = ({ width, height, nodes, edges, dispatch }) => {
   return (
     <Stage style={ style } width={ width } height={ height }>
       <Layer>
-        { edges.map(({ name, points }) => (
-          <Edge key={ name } name={ name } points={ points } />
+        { edges.map(({ name, points, type }) => (
+          <Edge key={ name } type={ type } name={ name } points={ points } />
         ))}
         { nodes.map(({ name, pos, selected }) => (
           <Node

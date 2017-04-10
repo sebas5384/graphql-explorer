@@ -28,7 +28,7 @@ const arcDefaultProps = {
   angle: 11,
 }
 
-const Edge = ({ points, name }) => {
+const Edge = ({ points, name, type }) => {
   const centralizedPoints = centralizeLinePoints(points)
   const [posAX, posAY, posBX, posBY] = centralizedPoints
   const rotationA = rotationFromPositions([[posAX, posBX], [posAY, posBY]])

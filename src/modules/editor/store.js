@@ -55,7 +55,7 @@ export default {
     },
 
     [addEdge]: (state, { payload: { name } }) => {
-      const regex = /^([a-zA-Z0-9]+)(HasMany|BelongsTo|HasOne|HasManyAndBelongsTo)([a-zA-Z0-9]+)$/
+      const regex = /^([a-zA-Z0-9]+)(HasMany|HasOne|BelongsTo|BelongsToMany|HasManyAndBelongsTo)([a-zA-Z0-9]+)$/
       const [_, nodeA, type, nodeB] = regex.exec(name)
       const newEdge = {
         name,

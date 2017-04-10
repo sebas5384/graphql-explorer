@@ -16,7 +16,7 @@ const strokeCircleProps = {
 }
 
 const selectedCircleProps = {
-  radius: 85,
+  radius: 83,
   stroke: '#0099FF',
   strokeWidth: 2,
   x: 61,
@@ -25,30 +25,34 @@ const selectedCircleProps = {
   dashEnabled: true
 }
 
-const TextLabel = ({ name }) => (
+const TextLabel = ({ text }) => (
   <Text
-    width={ 100 }
-    height={ 119 }
-    x={ 11 }
-    y={ 49 }
-    text={ name }
+    width={ 97 }
+    height={ 38 }
+    x={ 12 }
+    y={ 51 }
+    text={ text }
     align='center'
     wrap='char'
-    fontSize={ 20 }
+    fontSize={ 18 }
+    fontFamily='Arial'
     fill='#666666'
   />
 )
 
-const Node = ({ selected, image, onClick, name, ...props }) => {
+const Node = ({ draggable, dragBoundFunc, selected, image, onClick, name, ...props }) => {
   return (
     <Group { ...props }>
       <Circle { ...strokeCircleProps } />
       { selected &&
         <Circle ref='selectedCircle' { ...selectedCircleProps } />
       }
-      <Group onClick={ onClick }>
+      <Group
+        onClick={ onClick }
+        draggable={ draggable } dragBoundFunc={ dragBoundFunc }
+      >
         <Image { ...size } image={ image } />
-        <TextLabel name={ name } />
+        <TextLabel text={ name } />
       </Group>
     </Group>
   )
