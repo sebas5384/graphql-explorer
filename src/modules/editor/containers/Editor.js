@@ -6,7 +6,12 @@ import windowDimensions from 'react-window-dimensions'
 import Node from '../components/Node'
 import Edge from '../components/Edge'
 
-import { updateNode, selectNode } from '../store'
+import { updateStage, updateNode, selectNode, getSelectedNode } from '../store'
+
+const handleDragStage = dispatch => function (pos) {
+  dispatch(updateStage({ pos }))
+  return pos
+}
 
 const handleDrag = ({ name, dispatch }) => function (pos) {
   dispatch(updateNode({ name, pos }))
@@ -17,16 +22,25 @@ const handleClick = ({ name, dispatch }) => event => {
   dispatch(selectNode({ name }))
 }
 
-const Editor = ({ width, height, nodes, edges, dispatch }) => {
+const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
+  .some(nodeName => (!selectedNode.hasOwnProperty('name') || nodeName === selectedNode.name))
+
+const Editor = ({ width, height, nodes, edges, selectedNode, dispatch }) => {
   const style = {
     position: 'fixed'
   }
 
   return (
-    <Stage style={ style } width={ width } height={ height }>
+    <Stage draggable dragBoundFunc={ handleDragStage(dispatch) } style={ style } width={ width } height={ height }>
       <Layer>
-        { edges.map(({ name, points, type }) => (
-          <Edge key={ name } type={ type } name={ name } points={ points } />
+        { edges.map(({ name, points, type, nodes: edgeNodes }) => (
+          <Edge
+            key={ name }
+            active={ edgeIsActive({ edgeNodes, selectedNode }) }
+            type={ type }
+            name={ name }
+            points={ points }
+          />
         ))}
         { nodes.map(({ name, pos, selected }) => (
           <Node
@@ -44,7 +58,11 @@ const Editor = ({ width, height, nodes, edges, dispatch }) => {
   )
 }
 
-const mapStateToProps = ({ nodes, edges }) => ({ edges, nodes })
+const mapStateToProps = ({ nodes, edges }) => ({
+  edges,
+  nodes,
+  selectedNode: getSelectedNode(nodes),
+})
 
 export default compose(
   connect(mapStateToProps),

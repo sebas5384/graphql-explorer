@@ -15,31 +15,44 @@ const rotationFromPositions = positions => {
   return adjustAngle(rotation)
 }
 
-const lineDefaultProps = {
-  fill: '#FF68C5',
-  stroke: '#FF68C5',
-  strokeWidth: 4,
-}
-
-const arcDefaultProps = {
-  fill: '#FF68C5',
-  innerRadius: 65,
-  outerRadius: 68,
-  angle: 11,
-}
-
-const Edge = ({ points, name, type }) => {
+const Edge = ({ points, name, type, active = true }) => {
   const centralizedPoints = centralizeLinePoints(points)
   const [posAX, posAY, posBX, posBY] = centralizedPoints
-  const rotationA = rotationFromPositions([[posAX, posBX], [posAY, posBY]])
+  // const rotationA = rotationFromPositions([[posAX, posBX], [posAY, posBY]])
   const rotationB = rotationFromPositions([[posBX, posAX], [posBY, posAY]])
+
+  const color = active ? '#FF68C5' : '#9B9B9B'
+
+  const lineDefaultProps = {
+    fill: color,
+    stroke: color,
+    strokeWidth: 4,
+    // dashEnabled: true,
+    // dash: [8, 3]
+  }
+
+  const arcHasOneProps = {
+    fill: color,
+    innerRadius: 65,
+    outerRadius: 68,
+    angle: 11,
+  }
+
+  const arcManyProps = {
+    fill: color,
+    innerRadius: 72,
+    outerRadius: 75,
+    angle: 10,
+  }
 
   return (
     <Group>
-      <Arc { ...arcDefaultProps } x={ posAX } y={ posAY } rotation={ rotationA } />
-      <Arc { ...arcDefaultProps } x={ posBX } y={ posBY } rotation={ rotationB }/>
+      {/* <Arc { ...arcManyProps } x={ posAX } y={ posAY } rotation={ rotationA } /> */}
+      <Arc { ...arcHasOneProps } x={ posBX } y={ posBY } rotation={ rotationB }/>
+      { /many/i.test(type) &&
+        <Arc { ...arcManyProps } x={ posBX } y={ posBY } rotation={ rotationB }/>
+      }
       <Line
-        key={ name + 'line' }
         { ...lineDefaultProps }
         points={ centralizedPoints }
       />

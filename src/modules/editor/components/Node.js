@@ -8,9 +8,9 @@ const size = { width: 124, height: 124 }
 
 const strokeCircleProps = {
   ...size,
-  fill: 'white',
+  fill: 'red',
   stroke: 'white',
-  strokeWidth: 6,
+  strokeWidth: 5.7,
   x: 61,
   y: 61,
 }
@@ -40,7 +40,7 @@ const TextLabel = ({ text }) => (
   />
 )
 
-const Node = ({ draggable, dragBoundFunc, selected, image, onClick, name, ...props }) => {
+const Node = ({ draggable, dragBoundFunc, selected, image, onClick, name, setImage, ...props }) => {
   return (
     <Group { ...props }>
       <Circle { ...strokeCircleProps } />
@@ -48,8 +48,10 @@ const Node = ({ draggable, dragBoundFunc, selected, image, onClick, name, ...pro
         <Circle ref='selectedCircle' { ...selectedCircleProps } />
       }
       <Group
+        x={ 0 } y={ 0 }
         onClick={ onClick }
         draggable={ draggable } dragBoundFunc={ dragBoundFunc }
+        dragDistance={ 3 }
       >
         <Image { ...size } image={ image } />
         <TextLabel text={ name } />
