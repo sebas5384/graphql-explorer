@@ -8,7 +8,7 @@ const size = { width: 124, height: 124 }
 
 const strokeCircleProps = {
   ...size,
-  fill: 'red',
+  fill: 'white',
   stroke: 'white',
   strokeWidth: 5.7,
   x: 61,

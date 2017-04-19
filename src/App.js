@@ -6,10 +6,9 @@ import './App.css'
 import Editor from './modules/editor/containers/Editor'
 import { addNode, addEdge } from './modules/editor/store'
 
-
 const App = ({ handleAddNode,handleAddEdge }) => (
-  <div className="App">
-    <button onClick={ handleAddNode }>+1 NODE</button>
+  <div className='App'>
+    <a className='addNode' onClick={ handleAddNode }>ADD NODE</a>
     <button onClick={ handleAddEdge }>+1 RELATION</button>
     <Editor />
   </div>
