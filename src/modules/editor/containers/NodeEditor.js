@@ -1,5 +1,5 @@
 import React from 'react'
-import { compose } from 'recompose'
+import { compose, branch, renderNothing } from 'recompose'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
@@ -52,5 +52,6 @@ const mapStateToProps = ({ nodes }) => ({
 })
 
 export default compose(
-  connect(mapStateToProps)
+  connect(mapStateToProps),
+  branch(({ node }) => (typeof node === 'undefined'), renderNothing)
 )(NodeEdit)
