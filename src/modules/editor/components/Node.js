@@ -1,6 +1,8 @@
 import React from 'react'
 import { Image, Group, Circle, Text } from 'react-konva'
 import { compose, lifecycle, withState } from 'recompose'
+import { spring, presets } from 'react-motion'
+import { ReactMotionLoop as MotionLoop } from 'react-motion-loop'
 
 import nodeImg from './assets/node.svg'
 
@@ -40,12 +42,42 @@ const TextLabel = ({ text }) => (
   />
 )
 
-const Node = ({ draggable, dragBoundFunc, selected, image, onClick, name, setImage, ...props }) => {
+const ConnectingCircle = ({ active = false }) => (
+  <MotionLoop
+    styleFrom={{ rotation: spring(0, presets.tiff) }}
+    styleTo={{ rotation: spring(10) }}
+  >
+    { ({ rotation }) => (
+      <Circle
+        { ...selectedCircleProps }
+        rotation={ rotation }
+        stroke={ active ? '#FF68C5' : '#0099FF'}
+      />
+    ) }
+  </MotionLoop>
+)
+
+const Node = ({
+  draggable,
+  dragBoundFunc,
+  selected,
+  image,
+  onClick,
+  name,
+  setImage,
+  connector: { isConnecting, connectedTo },
+  ...props
+}) => {
+  const isConnected = (connectedTo === name) || (connectedTo && selected)
+
   return (
     <Group { ...props }>
       <Circle { ...strokeCircleProps } />
-      { selected &&
-        <Circle ref='selectedCircle' { ...selectedCircleProps } />
+      { (!isConnecting && selected) &&
+        <Circle { ...selectedCircleProps } />
+      }
+      { ((isConnecting && selected) || isConnected) &&
+        <ConnectingCircle active={ isConnected } />
       }
       <Group
         x={ 0 } y={ 0 }

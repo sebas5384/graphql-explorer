@@ -1,5 +1,8 @@
 import { BOOT } from 'redux-boot'
 import { createAction } from 'redux-actions'
+import lscache from 'lscache'
+
+import initialStateMock from './__mock__/initialState'
 
 /*
  * Actions.
@@ -10,6 +13,7 @@ export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
 export const addNode = createAction('editor/node/ADD')
 export const addEdge = createAction('editor/edge/ADD')
+export const updateConnector = createAction('editor/connector/UPDATE')
 
 /*
  * Helpers.
@@ -20,74 +24,12 @@ export const normalizePosWithStage = ({ stage, pos }) => ({
 })
 
 /*
- * Mock of the State.
- */
-const nodesMock = [
-  {
-    name: 'User',
-    pos: { x: 200, y: 100 },
-    selected: false,
-  },
-  {
-    name: 'Post',
-    pos: { x: 400, y: 200 },
-    selected: false,
-  },
-  {
-    name: 'Comment',
-    pos: { x: 350, y: 400 },
-    selected: false,
-  },
-  {
-    name: 'Rank',
-    pos: { x: 85, y: 400 },
-    selected: false,
-  },
-  {
-    name: 'Image',
-    pos: { x: 110, y: 240 },
-    selected: false,
-  }
-]
-
-const edgesMock = [
-  {
-    name: 'UserHasManyPost',
-    nodes: ['User', 'Post'],
-    type: 'hasMany',
-    points: [200, 100, 400, 200],
-  },
-  {
-    name: 'UserHasManyComment',
-    nodes: ['User', 'Comment'],
-    type: 'hasMany',
-    points: [200, 100, 350, 400],
-  },
-  {
-    name: 'CommentHasManyRank',
-    nodes: ['Comment', 'Rank'],
-    type: 'hasMany',
-    points: [350, 400, 85, 400],
-  },
-  {
-    name: 'CommentHasOneUser',
-    nodes: ['Comment', 'User'],
-    type: 'hasOne',
-    points: [350, 400, 200, 100],
-  },
-  {
-    name: 'ImageBelongsToManyUser',
-    nodes: ['Image', 'User'],
-    type: 'BelongsToMany',
-    points: [110, 240, 200, 100]
-  }
-]
-
-/*
  * Selectors.
  */
 
 export const getSelectedNode = (nodes = []) => nodes.find(node => node.selected)
+export const getConnectedNode = ({ nodes = [], connectedTo }) => nodes
+  .find(({ name }) => name === connectedTo)
 
 /*
  * Reducers.
@@ -97,9 +39,13 @@ export const reducer = {
 
     const newState = {
       ...state,
-      nodes: nodesMock,
-      edges: edgesMock,
+      nodes: lscache.get('nodes') || initialStateMock.nodes,
+      edges: lscache.get('edges') || initialStateMock.edges,
       stage: { pos: { x: 0, y: 0 } },
+      connector: {
+        isConnecting: false,
+        connectedTo: null,
+      }
     }
 
     return newState
@@ -169,6 +115,10 @@ export const reducer = {
 
   [updateStage]: (state, { payload }) => {
     return { ...state, stage: payload }
+  },
+
+  [updateConnector]: (state, { payload }) => {
+    return { ...state, connector: { ...state.connector, ...payload } }
   }
 }
 
@@ -199,4 +149,19 @@ export const middleware = {
   }
 }
 
-export default { reducer, middleware }
+const enhancer = createStore => (reducer, initialState, enhancer) => {
+  const store = createStore(reducer, initialState, enhancer)
+
+  // Updates local storage.
+  store.subscribe(() => {
+    const state = store.getState()
+
+    lscache.set('nodes', state.nodes)
+    lscache.set('edges', state.edges)
+  })
+
+  return store
+}
+
+
+export default { reducer, middleware, enhancer }

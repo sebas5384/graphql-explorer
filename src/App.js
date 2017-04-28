@@ -1,16 +1,31 @@
 import React from 'react'
 import { compose, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
+import ReactCursorPosition from 'react-cursor-position'
 import './App.css'
 
 import Editor from './modules/editor/containers/Editor'
-import { addNode, addEdge } from './modules/editor/store'
+import NodeEditor from './modules/editor/containers/NodeEditor'
+import { addNode, addEdge, getSelectedNode } from './modules/editor/store'
 
-const App = ({ handleAddNode,handleAddEdge }) => (
+const PainelNavigator = styled.section`
+  position: fixed;
+  top: 2.2em;
+  left: 2.3em;
+  z-index: 1;
+`
+
+const App = ({ handleAddNode, handleAddEdge }) => (
   <div className='App'>
     <a className='addNode' onClick={ handleAddNode }>ADD NODE</a>
-    <button onClick={ handleAddEdge }>+1 RELATION</button>
-    <Editor />
+    <button onClick={ handleAddEdge }>ADD RELATION</button>
+    <PainelNavigator>
+      <NodeEditor />
+    </PainelNavigator>
+    <ReactCursorPosition>
+      <Editor />
+    </ReactCursorPosition>
   </div>
 )
 
@@ -20,7 +35,7 @@ const handleAddNode = ({ dispatch }) => event => {
 }
 
 const handleAddEdge = ({ dispatch, nodes }) => event => {
-  const selectedNode = nodes.find(node => node.selected)
+  const selectedNode = getSelectedNode(nodes)
   const defaultName = selectedNode ? selectedNode.name + 'HasMany' : ''
   const name = prompt('Name of the relation?', defaultName)
   name && dispatch(addEdge({ name }))
