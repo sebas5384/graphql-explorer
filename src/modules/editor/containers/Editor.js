@@ -18,6 +18,7 @@ import {
   resetConnector,
 } from '../store'
 
+// @TODO Convert all these handlers to use withHandlers.
 const handleDragStage = dispatch => function (pos) {
   dispatch(updateStage({ pos }))
   return pos
