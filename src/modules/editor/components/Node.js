@@ -1,8 +1,7 @@
 import React from 'react'
 import { Image, Group, Circle, Text } from 'react-konva'
 import { compose, lifecycle, withState } from 'recompose'
-import { spring, presets } from 'react-motion'
-import { ReactMotionLoop as MotionLoop } from 'react-motion-loop'
+import { spring, Motion } from 'react-motion'
 
 import nodeImg from './assets/node.svg'
 
@@ -43,18 +42,18 @@ const TextLabel = ({ text }) => (
 )
 
 const ConnectingCircle = ({ active = false }) => (
-  <MotionLoop
-    styleFrom={{ rotation: spring(0, presets.tiff) }}
-    styleTo={{ rotation: spring(10) }}
+  <Motion
+    defaultStyle={{ rotation: 0 }}
+    style={{ rotation: spring(-10, { stiffness: 60, damping: 0 }) }}
   >
     { ({ rotation }) => (
       <Circle
         { ...selectedCircleProps }
         rotation={ rotation }
-        stroke={ active ? '#FF68C5' : '#0099FF'}
+        stroke={ active ? '#FF68C5' : '#0099FF' }
       />
     ) }
-  </MotionLoop>
+  </Motion>
 )
 
 const Node = ({

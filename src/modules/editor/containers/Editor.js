@@ -51,14 +51,22 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
 
 const Editor = ({
   width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
-  onNodeClick: handleOnNodeClick,
+  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick
 }) => {
   const style = {
     position: 'fixed'
   }
 
   return (
-    <Stage draggable dragBoundFunc={ handleDragStage(dispatch) } style={ style } width={ width } height={ height }>
+    <Stage
+      draggable
+      dragDistance={ 2 }
+      dragBoundFunc={ handleDragStage(dispatch) }
+      onClick={ handleOnStageClick }
+      style={ style }
+      width={ width }
+      height={ height }
+    >
       <Layer>
         { edges.map(({ name, points, type, nodes: edgeNodes }) => (
           <Edge
@@ -112,6 +120,10 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector }) => ({ name })
   dispatch(selectNode({ name }))
 }
 
+const onStageClick = ({
+  dispatch, connector: { isConnecting, connectedTo }
+}) => event => (isConnecting && !connectedTo) && dispatch(resetConnector())
+
 const mapStateToProps = ({ nodes, edges, connector }) => ({
   edges,
   nodes,
@@ -122,5 +134,5 @@ const mapStateToProps = ({ nodes, edges, connector }) => ({
 export default compose(
   connect(mapStateToProps),
   windowDimensions(),
-  withHandlers({ onNodeClick }),
+  withHandlers({ onNodeClick, onStageClick }),
 )(Editor)
