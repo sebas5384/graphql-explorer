@@ -66,6 +66,7 @@ export const reducer = {
       name,
       type,
       nodes: [nodeA, nodeB],
+      points: [],
     }
     return { ...state, edges: state.edges.concat(newEdge)}
   },
