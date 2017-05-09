@@ -14,6 +14,7 @@ export const selectNode = createAction('editor/node/SELECT')
 export const addNode = createAction('editor/node/ADD')
 export const addEdge = createAction('editor/edge/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
+export const resetConnector = createAction('editor/connector/RESET')
 
 /*
  * Helpers.
@@ -31,25 +32,22 @@ export const getSelectedNode = (nodes = []) => nodes.find(node => node.selected)
 export const getConnectedNode = ({ nodes = [], connectedTo }) => nodes
   .find(({ name }) => name === connectedTo)
 
+const getInitialState = state => ({
+  ...state,
+  nodes: lscache.get('nodes') || initialStateMock.nodes,
+  edges: lscache.get('edges') || initialStateMock.edges,
+  stage: { pos: { x: 0, y: 0 } },
+  connector: {
+    isConnecting: false,
+    connectedTo: null,
+  }
+})
+
 /*
  * Reducers.
  */
 export const reducer = {
-  [BOOT]: (state, action) => {
-
-    const newState = {
-      ...state,
-      nodes: lscache.get('nodes') || initialStateMock.nodes,
-      edges: lscache.get('edges') || initialStateMock.edges,
-      stage: { pos: { x: 0, y: 0 } },
-      connector: {
-        isConnecting: false,
-        connectedTo: null,
-      }
-    }
-
-    return newState
-  },
+  [BOOT]: (state, action) => getInitialState(state),
 
   [addNode]: (state, { payload: newNode }) => {
     const normalizedNode = {
@@ -92,7 +90,7 @@ export const reducer = {
     return { ...state, nodes: updatedNodes }
   },
 
-  [updateEdge]: (state, { payload: node }) => {
+  [updateEdge]: (state, { payload: { node } }) => {
     const updatedEdges = state.edges
       .map(edge => {
         if (!edge.nodes.some(name => name === node.name)) return edge
@@ -120,6 +118,10 @@ export const reducer = {
 
   [updateConnector]: (state, { payload }) => {
     return { ...state, connector: { ...state.connector, ...payload } }
+  },
+
+  [resetConnector]: (state, action) => {
+    return { ...state, connector: getInitialState(state).connector }
   }
 }
 
@@ -132,19 +134,22 @@ export const middleware = {
 
     // Update the edges.
     const { payload: { name, pos } } = action
-    dispatch(updateEdge({ name, pos }))
+    dispatch(updateEdge({ node: { name, pos } }))
     return result
   },
   [addEdge]: ({ dispatch, getState }) => next => action => {
     const result = next(action)
     const { edges, nodes } = getState()
+
     // Set pointers for the new edge.
     const newEdge = edges.find(edge => edge.name === action.payload.name)
 
     const nodesToUpdate = nodes
       .filter(node => newEdge.nodes.some(name => name === node.name))
 
-    nodesToUpdate.forEach(node => dispatch(updateEdge(node)))
+    nodesToUpdate.forEach(node => {
+      dispatch(updateEdge({ node }))
+    })
 
     return result
   }

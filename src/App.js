@@ -7,7 +7,7 @@ import './App.css'
 
 import Editor from './modules/editor/containers/Editor'
 import NodeEditor from './modules/editor/containers/NodeEditor'
-import { addNode, addEdge, getSelectedNode } from './modules/editor/store'
+import { addNode } from './modules/editor/store'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -19,7 +19,6 @@ const PainelNavigator = styled.section`
 const App = ({ handleAddNode, handleAddEdge }) => (
   <div className='App'>
     <a className='addNode' onClick={ handleAddNode }>ADD NODE</a>
-    <button onClick={ handleAddEdge }>ADD RELATION</button>
     <PainelNavigator>
       <NodeEditor />
     </PainelNavigator>
@@ -34,16 +33,9 @@ const handleAddNode = ({ dispatch }) => event => {
   name && dispatch(addNode({ name, pos: { x: 50, y: 50 } }))
 }
 
-const handleAddEdge = ({ dispatch, nodes }) => event => {
-  const selectedNode = getSelectedNode(nodes)
-  const defaultName = selectedNode ? selectedNode.name + 'HasMany' : ''
-  const name = prompt('Name of the relation?', defaultName)
-  name && dispatch(addEdge({ name }))
-}
-
 const mapStateToProps = ({ nodes }) => ({ nodes })
 
 export default compose(
   connect(mapStateToProps),
-  withHandlers({ handleAddNode, handleAddEdge })
+  withHandlers({ handleAddNode })
 )(App)

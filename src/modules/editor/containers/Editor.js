@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { compose } from 'recompose'
+import { compose, withHandlers } from 'recompose'
 import { Layer, Stage } from 'react-konva'
 import windowDimensions from 'react-window-dimensions'
 
@@ -9,11 +9,13 @@ import Edge from '../components/Edge'
 import ConnectorEdge from '../containers/ConnectorEdge'
 
 import {
+  addEdge,
   updateStage,
   updateNode,
   selectNode,
   getSelectedNode,
-  updateConnector
+  updateConnector,
+  resetConnector,
 } from '../store'
 
 const handleDragStage = dispatch => function (pos) {
@@ -24,10 +26,6 @@ const handleDragStage = dispatch => function (pos) {
 const handleDrag = ({ name, dispatch }) => function (pos) {
   dispatch(updateNode({ name, pos }))
   return pos
-}
-
-const handleClick = ({ name, dispatch }) => event => {
-  dispatch(selectNode({ name }))
 }
 
 const handleDoubleClick = ({ name, dispatch }) => event => {
@@ -52,7 +50,8 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
   ))
 
 const Editor = ({
-  width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector
+  width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
+  onNodeClick: handleOnNodeClick,
 }) => {
   const style = {
     position: 'fixed'
@@ -82,7 +81,7 @@ const Editor = ({
             selected={ selected }
             connector={ connector }
             draggable dragBoundFunc={ handleDrag({ name, dispatch }) }
-            onClick={ handleClick({ name, dispatch }) }
+            onClick={ handleOnNodeClick({ name }) }
             onDblclick={ handleDoubleClick({ name, dispatch }) }
             onMouseOver={ handleMouseOver({ name, selectedNode, connector, dispatch }) }
             onMouseOut={ handleMouseOut({ name, connector, dispatch }) }
@@ -95,6 +94,24 @@ const Editor = ({
   )
 }
 
+const onNodeClick = ({ dispatch, edges, selectedNode, connector }) => ({ name }) => event => {
+  // Connecting Nodes.
+  const { isConnecting, connectedTo } = connector
+  if (isConnecting && connectedTo) {
+    const defaultName = selectedNode ? selectedNode.name + 'HasMany' + connectedTo : ''
+    const edgeName = prompt('Name of the relation?', defaultName)
+
+    if (edgeName && !edges.some(edge => edge.name === edgeName)) {
+      dispatch(addEdge({ name: edgeName }))
+    }
+
+    return dispatch(resetConnector())
+  }
+
+  // Selecting a Node.
+  dispatch(selectNode({ name }))
+}
+
 const mapStateToProps = ({ nodes, edges, connector }) => ({
   edges,
   nodes,
@@ -104,6 +121,6 @@ const mapStateToProps = ({ nodes, edges, connector }) => ({
 
 export default compose(
   connect(mapStateToProps),
-  windowDimensions()
-  // @TODO use withHandlers.
+  windowDimensions(),
+  withHandlers({ onNodeClick }),
 )(Editor)
