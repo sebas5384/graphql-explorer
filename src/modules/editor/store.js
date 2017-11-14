@@ -32,6 +32,9 @@ export const getSelectedNode = (nodes = []) => nodes.find(node => node.selected)
 export const getConnectedNode = ({ nodes = [], connectedTo }) => nodes
   .find(({ name }) => name === connectedTo)
 
+/*
+ * Initial State.
+ */
 const getInitialState = state => ({
   ...state,
   nodes: lscache.get('nodes') || initialStateMock.nodes,

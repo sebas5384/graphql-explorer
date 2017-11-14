@@ -52,7 +52,7 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
 
 const Editor = ({
   width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
-  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick
+  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick, ...rest
 }) => {
   const style = {
     position: 'fixed'

@@ -3,11 +3,14 @@ import { compose, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import ReactCursorPosition from 'react-cursor-position'
+import { withEvents } from 'react-compose-events'
+import isHotKey from 'is-hotkey'
+
 import './App.css'
 
 import Editor from './modules/editor/containers/Editor'
 import NodeEditor from './modules/editor/containers/NodeEditor'
-import { addNode } from './modules/editor/store'
+import { addNode, resetConnector } from './modules/editor/store'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -22,7 +25,7 @@ const App = ({ handleAddNode, handleAddEdge }) => (
     <PainelNavigator>
       <NodeEditor />
     </PainelNavigator>
-    <ReactCursorPosition>
+    <ReactCursorPosition mapChildProps={ ({ position }) => ({ cursorPosition: position })}>
       <Editor />
     </ReactCursorPosition>
   </div>
@@ -37,5 +40,12 @@ const mapStateToProps = ({ nodes }) => ({ nodes })
 
 export default compose(
   connect(mapStateToProps),
-  withHandlers({ handleAddNode })
+  withHandlers({ handleAddNode }),
+  withEvents(window, ({ dispatch }) => ({
+    keydown: event => {
+      if (isHotKey('esc')(event)) {
+        dispatch(resetConnector())
+      }
+    }
+  }))
 )(App)
