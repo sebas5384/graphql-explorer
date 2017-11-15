@@ -103,7 +103,6 @@ export const reducer = {
           .map(node => node.pos)
           .map(Object.values)
           .reduce((flat, pos) => flat.concat(pos), [])
-
         return { ...edge, points }
       })
 
@@ -144,9 +143,12 @@ export const middleware = {
   [addEdge]: ({ dispatch, getState }) => next => action => {
     const result = next(action)
     const { edges, nodes } = getState()
+    const { nodeA, nodeB } = action.payload
 
     // Set pointers for the new edge.
-    const newEdge = edges.find(edge => edge.name === action.payload.name)
+    const newEdge = edges.find(
+      edge => edge.nodes[0] === nodeA && edge.nodes[1] === nodeB
+    )
 
     const nodesToUpdate = nodes
       .filter(node => newEdge.nodes.some(name => name === node.name))
