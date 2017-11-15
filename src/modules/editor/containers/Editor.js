@@ -10,6 +10,7 @@ import ConnectorEdge from '../containers/ConnectorEdge'
 
 import {
   addEdge,
+  addField,
   updateStage,
   updateNode,
   selectNode,
@@ -107,12 +108,14 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector }) => ({ name })
   // Connecting Nodes.
   const { isConnecting, connectedTo } = connector
   if (isConnecting && connectedTo) {
-    const defaultName = selectedNode ? selectedNode.name + 'HasMany' + connectedTo : ''
-    const edgeName = prompt('Name of the relation?', defaultName)
+    const name = prompt('Name of the field?')
+    const type = prompt('Type of the relation (hasMany, hasOne)?')
 
-    if (edgeName && !edges.some(edge => edge.name === edgeName)) {
-      dispatch(addEdge({ name: edgeName }))
-    }
+    // if (edgeName && !edges.some(edge => edge.name === edgeName)) {
+    //   dispatch(addEdge({ name: edgeName }))
+    // }
+
+    dispatch(addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type }))
 
     return dispatch(resetConnector())
   }

@@ -1,4 +1,4 @@
-import R from 'ramda'
+import * as R from 'ramda'
 
 const lowestPos = prop => R.pipe(
   R.sortWith([R.ascend(R.prop(prop))]),
@@ -13,11 +13,13 @@ const biggestPos = prop => R.pipe(
 )
 
 export const middlePositions = nodes => {
-  const yA = biggestPos('y')(nodes)
-  const yB = lowestPos('y')(nodes)
+  const positions = R.reduce((carry, item) => carry.concat(item.pos), [], nodes)
 
-  const xA = biggestPos('x')(nodes)
-  const xB = lowestPos('x')(nodes)
+  const yA = biggestPos("y")(positions);
+  const yB = lowestPos("y")(positions);
+
+  const xA = biggestPos("x")(positions);
+  const xB = lowestPos("x")(positions);
 
   const x = ((xA - xB) / 2) + xB
   const y = ((yA - yB) / 2) + yB

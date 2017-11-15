@@ -4,14 +4,18 @@ import lscache from 'lscache'
 
 import initialStateMock from './__mock__/initialState'
 
+import { middlePositions } from './lib/middlePositions'
+
 /*
  * Actions.
  */
 export const updateStage = createAction('editor/stage/UPDATE')
 export const updateNode = createAction('editor/node/UPDATE')
+export const updateField = createAction('editor/field/UPDATE')
 export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
 export const addNode = createAction('editor/node/ADD')
+export const addField = createAction('editor/field/ADD')
 export const addEdge = createAction('editor/edge/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
@@ -60,11 +64,8 @@ export const reducer = {
     return { ...state, nodes: state.nodes.concat(normalizedNode)}
   },
 
-  [addEdge]: (state, { payload: { name } }) => {
-    const regex = /^([a-zA-Z0-9]+)(HasMany|HasOne|BelongsToMany|BelongsTo)([a-zA-Z0-9]+)$/
-    const [_, nodeA, type, nodeB] = regex.exec(name)
+  [addEdge]: (state, { payload: { nodeA, nodeB, type } }) => {
     const newEdge = {
-      name,
       type,
       nodes: [nodeA, nodeB],
       points: [],
@@ -154,6 +155,29 @@ export const middleware = {
       dispatch(updateEdge({ node }))
     })
 
+    return result
+  },
+  [addField]: ({ dispatch, getState }) => next => action => {
+    const result = next(action)
+    const { edges, nodes } = getState()
+    const { name, nodeA, nodeB, type } = action.payload
+
+    const selectedNodes = nodes.filter(
+      node => [nodeA, nodeB].some(name => node.name === name)
+    )
+    // 1. create node for field.
+    // @TODO only in case it doesn't exist.
+    dispatch(addNode({
+      name, 
+      pos: middlePositions(selectedNodes),
+      type: 'relation',
+      selected: false,
+    }))
+    // 2. create edge from nodeA to fieldNode.
+    dispatch(addEdge({ nodeA, nodeB: name, type }))
+    // 3. create edge from fieldNode to nodeB. 
+    dispatch(addEdge({ nodeA: name, nodeB, type }))
+    
     return result
   }
 }
