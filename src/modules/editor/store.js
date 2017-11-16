@@ -167,17 +167,20 @@ export const middleware = {
     const selectedNodes = nodes.filter(
       node => [nodeA, nodeB].some(name => node.name === name)
     )
-    // 1. create node for field.
-    // @TODO only in case it doesn't exist.
+    
+    // Create node for field.
     dispatch(addNode({
       name, 
       pos: middlePositions(selectedNodes),
       type: 'relation',
       selected: false,
+      cardinality: type,
     }))
-    // 2. create edge from nodeA to fieldNode.
+    
+    // Create edge from nodeA to fieldNode.
     dispatch(addEdge({ nodeA, nodeB: name, type }))
-    // 3. create edge from fieldNode to nodeB. 
+    
+    // Create edge from fieldNode to nodeB. 
     dispatch(addEdge({ nodeA: name, nodeB, type }))
     
     return result

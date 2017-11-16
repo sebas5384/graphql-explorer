@@ -4,6 +4,7 @@ import { compose, lifecycle, withState } from 'recompose'
 import { spring, Motion } from 'react-motion'
 
 import nodeImg from './assets/node.svg'
+import nodeRelationImg from './assets/relation.svg'
 
 const size = { width: 124, height: 124 }
 
@@ -92,9 +93,11 @@ const Node = ({
 }
 
 function componentWillMount () {
-  const { setImage } = this.props
+  const { setImage, type } = this.props
   const image = new window.Image()
-  image.src = nodeImg
+  image.src = type === 'relation'
+    ? nodeRelationImg
+    : nodeImg
   image.onload = () => setImage(image)
 }
 

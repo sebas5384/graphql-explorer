@@ -15,6 +15,7 @@ import {
   updateNode,
   selectNode,
   getSelectedNode,
+  getConnectedNode,
   updateConnector,
   resetConnector,
 } from '../store'
@@ -84,10 +85,11 @@ const Editor = ({
           <ConnectorEdge cursorPosition={ cursorPosition } />
         }
 
-        { nodes.map(({ name, pos, selected }) => (
+        { nodes.map(({ name, pos, selected, type }) => (
           <Node
             key={ name }
             name={ name }
+            type={ type }
             selected={ selected }
             connector={ connector }
             draggable dragBoundFunc={ handleDrag({ name, dispatch }) }
@@ -104,18 +106,38 @@ const Editor = ({
   )
 }
 
-const onNodeClick = ({ dispatch, edges, selectedNode, connector }) => ({ name }) => event => {
+const onNodeClick = ({ dispatch, edges, selectedNode, connector, nodes }) => ({ name }) => event => {
   // Connecting Nodes.
   const { isConnecting, connectedTo } = connector
   if (isConnecting && connectedTo) {
-    const name = prompt('Name of the field?')
-    const type = prompt('Type of the relation (hasMany, hasOne)?')
 
+    // @TODO Avoid to create same relations.
     // if (edgeName && !edges.some(edge => edge.name === edgeName)) {
     //   dispatch(addEdge({ name: edgeName }))
     // }
 
-    dispatch(addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type }))
+    const connectedToNode = getConnectedNode({ nodes, connectedTo })
+
+    // Connection from: model to model node.
+    if ([selectedNode, connectedToNode].every(({ type }) => type === 'model')) {
+      const name = prompt("Name of the field?")
+      const type = prompt("Type of the relation (hasMany, hasOne)?")
+
+      dispatch(
+        addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
+      )
+    }
+
+    // Connection from: model to relation node.
+    if (selectedNode.type === 'model' && connectedToNode.type === 'relation') {
+      dispatch(
+        addEdge({
+          nodeA: selectedNode.name,
+          nodeB: connectedTo,
+          type: connectedToNode.cardinality
+        })
+      )
+    }
 
     return dispatch(resetConnector())
   }

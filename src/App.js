@@ -33,7 +33,7 @@ const App = ({ handleAddNode, handleAddEdge }) => (
 
 const handleAddNode = ({ dispatch }) => event => {
   const name = prompt('Whats my name?')
-  name && dispatch(addNode({ name, pos: { x: 50, y: 50 } }))
+  name && dispatch(addNode({ name, pos: { x: 50, y: 50 }, type: 'model' }))
 }
 
 const mapStateToProps = ({ nodes }) => ({ nodes })
