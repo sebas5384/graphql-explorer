@@ -10,7 +10,7 @@ import './App.css'
 
 import Editor from './modules/editor/containers/Editor'
 import NodeEditor from './modules/editor/containers/NodeEditor'
-import { addNode, resetConnector } from './modules/editor/store'
+import { addNode, resetConnector, normalizePosWithStage } from './modules/editor/store'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -31,12 +31,13 @@ const App = ({ handleAddNode, handleAddEdge }) => (
   </div>
 )
 
-const handleAddNode = ({ dispatch }) => event => {
+const handleAddNode = ({ dispatch, stage }) => event => {
   const name = prompt('Whats my name?')
-  name && dispatch(addNode({ name, pos: { x: 50, y: 50 }, type: 'model' }))
+  const pos = normalizePosWithStage({ stage, pos: { x: 150, y: 150 } })
+  name && dispatch(addNode({ name, pos, type: 'model' }))
 }
 
-const mapStateToProps = ({ nodes }) => ({ nodes })
+const mapStateToProps = ({ nodes, stage }) => ({ nodes, stage })
 
 export default compose(
   connect(mapStateToProps),

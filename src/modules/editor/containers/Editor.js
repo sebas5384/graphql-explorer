@@ -18,6 +18,7 @@ import {
   getConnectedNode,
   updateConnector,
   resetConnector,
+  normalizePosWithStage
 } from '../store'
 
 // @TODO Convert all these handlers to use withHandlers.
@@ -26,8 +27,9 @@ const handleDragStage = dispatch => function (pos) {
   return pos
 }
 
-const handleDrag = ({ name, dispatch }) => function (pos) {
-  dispatch(updateNode({ name, pos }))
+const handleOnNodeDrag = ({ dispatch, stage }) => ({ name }) => function (pos) {
+  const normalizedPos = normalizePosWithStage({ stage, pos })
+  dispatch(updateNode({ name, pos: normalizedPos }))
   return pos
 }
 
@@ -54,7 +56,8 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
 
 const Editor = ({
   width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
-  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick, ...rest
+  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick, handleOnNodeDrag,
+  ...rest
 }) => {
   const style = {
     position: 'fixed'
@@ -92,7 +95,7 @@ const Editor = ({
             type={ type }
             selected={ selected }
             connector={ connector }
-            draggable dragBoundFunc={ handleDrag({ name, dispatch }) }
+            draggable dragBoundFunc={ handleOnNodeDrag({ name }) }
             onClick={ handleOnNodeClick({ name }) }
             onDblclick={ handleDoubleClick({ name, dispatch }) }
             onMouseOver={ handleMouseOver({ name, selectedNode, connector, dispatch }) }
@@ -150,7 +153,8 @@ const onStageClick = ({
   dispatch, connector: { isConnecting, connectedTo }
 }) => event => (isConnecting && !connectedTo) && dispatch(resetConnector())
 
-const mapStateToProps = ({ nodes, edges, connector }) => ({
+const mapStateToProps = ({ stage, nodes, edges, connector }) => ({
+  stage,
   edges,
   nodes,
   selectedNode: getSelectedNode(nodes),
@@ -160,5 +164,5 @@ const mapStateToProps = ({ nodes, edges, connector }) => ({
 export default compose(
   connect(mapStateToProps),
   windowDimensions(),
-  withHandlers({ onNodeClick, onStageClick }),
+  withHandlers({ onNodeClick, onStageClick, handleOnNodeDrag }),
 )(Editor)

@@ -59,7 +59,7 @@ export const reducer = {
   [addNode]: (state, { payload: newNode }) => {
     const normalizedNode = {
       ...newNode,
-      pos: normalizePosWithStage({ stage: state.stage, pos: newNode.pos })
+      pos: newNode.pos
     }
     return { ...state, nodes: state.nodes.concat(normalizedNode)}
   },
@@ -84,7 +84,7 @@ export const reducer = {
     const updatedNode = {
       ...currentNode,
       ...payload,
-      pos: normalizePosWithStage({ stage: state.stage, pos: updatedNodePos })
+      pos: updatedNodePos
     }
 
     const updatedNodes = state.nodes
@@ -161,13 +161,13 @@ export const middleware = {
   },
   [addField]: ({ dispatch, getState }) => next => action => {
     const result = next(action)
-    const { edges, nodes } = getState()
+    const { nodes } = getState()
     const { name, nodeA, nodeB, type } = action.payload
 
     const selectedNodes = nodes.filter(
       node => [nodeA, nodeB].some(name => node.name === name)
     )
-    
+
     // Create node for field.
     dispatch(addNode({
       name, 
