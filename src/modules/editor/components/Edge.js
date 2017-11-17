@@ -1,7 +1,6 @@
 import React from 'react'
 import { Group, Line, Arc } from 'react-konva'
 
-const centralizeLinePoints = points => points.map(pos => pos + 61)
 const calculateRotation = diffs => (Math.atan2(...diffs) * -1) * 180 / Math.PI
 
 // Positions must be [[x1, x2], [y1, y2]].
@@ -15,10 +14,28 @@ const rotationFromPositions = positions => {
   return adjustAngle(rotation)
 }
 
-const Edge = ({ points, name, type, active = true }) => {
-  const centralizedPoints = centralizeLinePoints(points)
-  const [posAX, posAY, posBX, posBY] = centralizedPoints
-  // const rotationA = rotationFromPositions([[posAX, posBX], [posAY, posBY]])
+const hasOneRadiusByType = type =>  {
+  switch (type) {
+    case 'model':
+      return { innerRadius: 65, outerRadius: 68 }
+    case 'relation':
+      return { innerRadius: 48, outerRadius: 51 }
+    default:
+  }
+}
+
+const hasManyRadiusByType = type =>  {
+  switch (type) {
+    case 'model':
+      return { innerRadius: 70, outerRadius: 73 }
+    case 'relation':
+      return { innerRadius: 53, outerRadius: 56 }
+    default:
+  }
+}
+
+const Edge = ({ points, name, type, active = true, connectedTo }) => {
+  const [posAX, posAY, posBX, posBY] = points
   const rotationB = rotationFromPositions([[posBX, posAX], [posBY, posAY]])
 
   const color = active ? '#FF68C5' : '#9B9B9B'
@@ -30,18 +47,18 @@ const Edge = ({ points, name, type, active = true }) => {
     // dashEnabled: true,
     // dash: [8, 3]
   }
-
+  
+  const hasOneRadius = hasOneRadiusByType(connectedTo.type)
   const arcHasOneProps = {
+    ...hasOneRadius,
     fill: color,
-    innerRadius: 65,
-    outerRadius: 68,
     angle: 11,
   }
-
+  
+  const hasManyRadius = hasManyRadiusByType(connectedTo.type)
   const arcManyProps = {
+    ...hasManyRadius,
     fill: color,
-    innerRadius: 72,
-    outerRadius: 75,
     angle: 10,
   }
 
@@ -54,7 +71,7 @@ const Edge = ({ points, name, type, active = true }) => {
       }
       <Line
         { ...lineDefaultProps }
-        points={ centralizedPoints }
+        points={ points }
       />
     </Group>
   )

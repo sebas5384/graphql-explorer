@@ -74,13 +74,14 @@ const Editor = ({
       height={ height }
     >
       <Layer>
-        { edges.map(({ name, points, type, nodes: edgeNodes }) => (
+        { edges.map(({ name, points, type, nodes: edgeNodes, connectedTo }) => (
           <Edge
             key={ name }
             active={ edgeIsActive({ edgeNodes, selectedNode }) }
             type={ type }
             name={ name }
             points={ points }
+            connectedTo={ connectedTo }
           />
         ))}
 
@@ -153,9 +154,13 @@ const onStageClick = ({
   dispatch, connector: { isConnecting, connectedTo }
 }) => event => (isConnecting && !connectedTo) && dispatch(resetConnector())
 
+const edgesWithDestinationNode = ({ nodes, edges }) => edges.map(edge => ({
+  ...edge, connectedTo: nodes.find(({ name }) => edge.nodes[1] === name)
+}))
+
 const mapStateToProps = ({ stage, nodes, edges, connector }) => ({
   stage,
-  edges,
+  edges: edgesWithDestinationNode({ edges, nodes }),
   nodes,
   selectedNode: getSelectedNode(nodes),
   connector,

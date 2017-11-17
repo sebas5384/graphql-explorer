@@ -1,6 +1,7 @@
 import { BOOT } from 'redux-boot'
 import { createAction } from 'redux-actions'
 import lscache from 'lscache'
+import * as R from 'ramda'
 
 import initialStateMock from './__mock__/initialState'
 
@@ -21,12 +22,34 @@ export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
 
 /*
- * Helpers.
+ * Helper to normalize positions by stage position / offset.
  */
-export const normalizePosWithStage = ({ stage, pos }) => ({
+
+ export const normalizePosWithStage = ({ stage, pos }) => ({
   x: pos.x - stage.pos.x,
   y: pos.y - stage.pos.y,
 })
+
+/*
+ * Helpers to centralize line points and positions by node type.
+ */
+
+ export const centralizeLinePoints = node => Object.values(node.pos)
+  .map(pos => pos + centerPositionsByType(node.type))
+
+export const centralizePositions = node =>
+  R.map(pos => pos + centerPositionsByType(node.type), node.pos)
+
+// @TODO this positions offsets should be centralized.
+const centerPositionsByType = type => {
+  switch (type) {
+    case 'model':
+      return 61
+    case 'relation':
+      return 45
+    default:
+  }
+}
 
 /*
  * Selectors.
@@ -100,8 +123,7 @@ export const reducer = {
         if (!edge.nodes.some(name => name === node.name)) return edge
         const points = edge.nodes
           .map(name => state.nodes.find(node => node.name === name))
-          .map(node => node.pos)
-          .map(Object.values)
+          .map(node => centralizeLinePoints(node))
           .reduce((flat, pos) => flat.concat(pos), [])
         return { ...edge, points }
       })

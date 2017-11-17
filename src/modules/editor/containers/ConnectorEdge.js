@@ -5,7 +5,8 @@ import ConnectorEdge from '../components/ConnectorEdge'
 import {
   getSelectedNode,
   getConnectedNode,
-  normalizePosWithStage
+  normalizePosWithStage,
+  centralizePositions
 } from '../store'
 
 const mapStateToProps = ({ nodes, stage, connector: { connectedTo } }) => ({
@@ -15,23 +16,21 @@ const mapStateToProps = ({ nodes, stage, connector: { connectedTo } }) => ({
   connectedNode: getConnectedNode({ nodes, connectedTo })
 })
 
-const centralizeLinePoints = ({ x, y }) => ({ x: x + 61, y: y + 61 })
-
 const connectWithPoints = ({
-  node: { pos },
+  node,
   stage,
   cursorPosition,
   active,
   connectedNode
 }) => {
-  const { x: posAX, y: posAY } = centralizeLinePoints(pos)
+  const { x: posAX, y: posAY } = centralizePositions(node)
 
   const destinationPosition = active
-    ? centralizeLinePoints(connectedNode.pos)
+    ? centralizePositions(connectedNode)
     : normalizePosWithStage({ stage, pos: cursorPosition })
 
   const { x: posBX, y: posBY } = destinationPosition
-
+  console.log([posAX, posAY, posBX, posBY])
   return { points: [posAX, posAY, posBX, posBY], active }
 }
 

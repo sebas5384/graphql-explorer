@@ -1,48 +1,75 @@
 const initialStateComplex = {
   nodes: [
     {
-      name: 'ApplicationPlace',
+      name: 'Vaccine',
       pos: {
-        x: -52,
-        y: 320
+        x: 1027,
+        y: 313
       },
       type: 'model',
       selected: false
     },
     {
-      name: 'Company',
+      name: 'ShotOrder',
       pos: {
-        x: -479,
-        y: 497
+        x: 426,
+        y: 605
       },
       type: 'model',
       selected: false
     },
     {
-      name: 'applicationPlaces',
+      name: 'Campaign',
       pos: {
-        x: -136.5,
-        y: 537
+        x: 844,
+        y: 50
       },
-      type: 'relation',
-      selected: false,
-      cardinality: 'hasMany'
+      type: 'model',
+      selected: false
     },
     {
       name: 'unity',
       pos: {
-        x: -313.5,
-        y: 336
+        x: 323.5,
+        y: 332
       },
       type: 'relation',
       selected: false,
       cardinality: 'hasOne'
     },
     {
-      name: 'applicationPlace',
+      name: 'company',
       pos: {
-        x: 50.5,
-        y: 563.5
+        x: 240,
+        y: 619
+      },
+      type: 'relation',
+      selected: false,
+      cardinality: 'hasOne'
+    },
+    {
+      name: 'Company',
+      pos: {
+        x: 147,
+        y: 453
+      },
+      type: 'model',
+      selected: false
+    },
+    {
+      name: 'Unity',
+      pos: {
+        x: 164,
+        y: 243
+      },
+      type: 'model',
+      selected: false
+    },
+    {
+      name: 'ApplicationPlace',
+      pos: {
+        x: 505,
+        y: 204
       },
       type: 'model',
       selected: false
@@ -50,8 +77,8 @@ const initialStateComplex = {
     {
       name: 'cdaLot',
       pos: {
-        x: 465.5,
-        y: 721
+        x: 841.5,
+        y: 633
       },
       type: 'relation',
       selected: false,
@@ -60,93 +87,17 @@ const initialStateComplex = {
     {
       name: 'CdaLot',
       pos: {
-        x: 465,
-        y: 523
+        x: 989,
+        y: 531
       },
       type: 'model',
       selected: false
-    },
-    {
-      name: 'Vaccine',
-      pos: {
-        x: 473,
-        y: 332
-      },
-      type: 'model',
-      selected: false
-    },
-    {
-      name: 'Campaign',
-      pos: {
-        x: 471,
-        y: 139
-      },
-      type: 'model',
-      selected: false
-    },
-    {
-      name: 'vaccines',
-      pos: {
-        x: 319.5,
-        y: 217
-      },
-      type: 'relation',
-      selected: false,
-      cardinality: 'hasMany'
     },
     {
       name: 'vaccine',
       pos: {
-        x: 278,
-        y: 540
-      },
-      type: 'relation',
-      selected: false,
-      cardinality: 'hasOne'
-    },
-    {
-      name: 'ShotPackage',
-      pos: {
-        x: 213,
-        y: 393
-      },
-      type: 'model',
-      selected: false
-    },
-    {
-      name: 'shotPackages',
-      pos: {
-        x: 103.5,
-        y: 268.5
-      },
-      type: 'relation',
-      selected: false,
-      cardinality: 'hasMany'
-    },
-    {
-      name: 'company',
-      pos: {
-        x: -317,
-        y: 563
-      },
-      type: 'relation',
-      selected: false,
-      cardinality: 'hasOne'
-    },
-    {
-      name: 'ShotOrder',
-      pos: {
-        x: -217,
-        y: 721
-      },
-      type: 'model',
-      selected: false
-    },
-    {
-      name: 'shotOrder',
-      pos: {
-        x: -16.5,
-        y: 751.5
+        x: 872,
+        y: 401
       },
       type: 'relation',
       selected: false,
@@ -155,20 +106,69 @@ const initialStateComplex = {
     {
       name: 'Person',
       pos: {
-        x: 223,
-        y: 734
-      },
-      type: 'model',
-      selected: true
-    },
-    {
-      name: 'Unity',
-      pos: {
-        x: -139,
-        y: 177
+        x: 701,
+        y: 489
       },
       type: 'model',
       selected: false
+    },
+    {
+      name: 'shotOrder',
+      pos: {
+        x: 603.5,
+        y: 641.5
+      },
+      type: 'relation',
+      selected: false,
+      cardinality: 'hasOne'
+    },
+    {
+      name: 'applicationPlace',
+      pos: {
+        x: 568.5,
+        y: 387.5
+      },
+      type: 'relation',
+      selected: false
+    },
+    {
+      name: 'ShotPackage',
+      pos: {
+        x: 691,
+        y: 268
+      },
+      type: 'model',
+      selected: false
+    },
+    {
+      name: 'shotPackages',
+      pos: {
+        x: 649.5,
+        y: 86.5
+      },
+      type: 'relation',
+      selected: false,
+      cardinality: 'hasMany'
+    },
+    {
+      name: 'vaccines',
+      pos: {
+        x: 881.5,
+        y: 232
+      },
+      type: 'relation',
+      selected: false,
+      cardinality: 'hasMany'
+    },
+    {
+      name: 'applicationPlaces',
+      pos: {
+        x: 430.5,
+        y: 444
+      },
+      type: 'relation',
+      selected: false,
+      cardinality: 'hasMany'
     }
   ],
   edges: [
@@ -179,10 +179,10 @@ const initialStateComplex = {
         'vaccines'
       ],
       points: [
-        471,
-        139,
-        319.5,
-        217
+        905,
+        111,
+        926.5,
+        277
       ]
     },
     {
@@ -192,10 +192,10 @@ const initialStateComplex = {
         'Vaccine'
       ],
       points: [
-        319.5,
-        217,
-        473,
-        332
+        926.5,
+        277,
+        1088,
+        374
       ]
     },
     {
@@ -205,10 +205,10 @@ const initialStateComplex = {
         'unity'
       ],
       points: [
-        -479,
-        497,
-        -313.5,
-        336
+        208,
+        514,
+        368.5,
+        377
       ]
     },
     {
@@ -218,10 +218,10 @@ const initialStateComplex = {
         'Unity'
       ],
       points: [
-        -313.5,
-        336,
-        -139,
-        177
+        368.5,
+        377,
+        225,
+        304
       ]
     },
     {
@@ -231,10 +231,10 @@ const initialStateComplex = {
         'unity'
       ],
       points: [
-        -52,
-        320,
-        -313.5,
-        336
+        566,
+        265,
+        368.5,
+        377
       ]
     },
     {
@@ -244,10 +244,10 @@ const initialStateComplex = {
         'company'
       ],
       points: [
-        -217,
-        721,
-        -317,
-        563
+        487,
+        666,
+        285,
+        664
       ]
     },
     {
@@ -257,10 +257,10 @@ const initialStateComplex = {
         'Company'
       ],
       points: [
-        -317,
-        563,
-        -479,
-        497
+        285,
+        664,
+        208,
+        514
       ]
     },
     {
@@ -270,10 +270,10 @@ const initialStateComplex = {
         'vaccine'
       ],
       points: [
-        223,
-        734,
-        278,
-        540
+        762,
+        550,
+        917,
+        446
       ]
     },
     {
@@ -283,10 +283,10 @@ const initialStateComplex = {
         'Vaccine'
       ],
       points: [
-        278,
-        540,
-        473,
-        332
+        917,
+        446,
+        1088,
+        374
       ]
     },
     {
@@ -296,10 +296,10 @@ const initialStateComplex = {
         'applicationPlace'
       ],
       points: [
-        223,
-        734,
-        50.5,
-        563.5
+        762,
+        550,
+        613.5,
+        432.5
       ]
     },
     {
@@ -309,10 +309,10 @@ const initialStateComplex = {
         'ApplicationPlace'
       ],
       points: [
-        50.5,
-        563.5,
-        -52,
-        320
+        613.5,
+        432.5,
+        566,
+        265
       ]
     },
     {
@@ -322,10 +322,10 @@ const initialStateComplex = {
         'cdaLot'
       ],
       points: [
-        223,
-        734,
-        465.5,
-        721
+        762,
+        550,
+        886.5,
+        678
       ]
     },
     {
@@ -335,10 +335,10 @@ const initialStateComplex = {
         'CdaLot'
       ],
       points: [
-        465.5,
-        721,
-        465,
-        523
+        886.5,
+        678,
+        1050,
+        592
       ]
     },
     {
@@ -348,10 +348,10 @@ const initialStateComplex = {
         'vaccine'
       ],
       points: [
-        465,
-        523,
-        278,
-        540
+        1050,
+        592,
+        917,
+        446
       ]
     },
     {
@@ -361,10 +361,10 @@ const initialStateComplex = {
         'applicationPlaces'
       ],
       points: [
-        -217,
-        721,
-        -136.5,
-        537
+        487,
+        666,
+        475.5,
+        489
       ]
     },
     {
@@ -374,10 +374,10 @@ const initialStateComplex = {
         'ApplicationPlace'
       ],
       points: [
-        -136.5,
-        537,
-        -52,
-        320
+        475.5,
+        489,
+        566,
+        265
       ]
     },
     {
@@ -387,10 +387,10 @@ const initialStateComplex = {
         'shotPackages'
       ],
       points: [
-        -52,
-        320,
-        103.5,
-        268.5
+        566,
+        265,
+        694.5,
+        131.5
       ]
     },
     {
@@ -400,10 +400,10 @@ const initialStateComplex = {
         'ShotPackage'
       ],
       points: [
-        103.5,
-        268.5,
-        213,
-        393
+        694.5,
+        131.5,
+        752,
+        329
       ]
     },
     {
@@ -413,10 +413,10 @@ const initialStateComplex = {
         'vaccine'
       ],
       points: [
-        213,
-        393,
-        278,
-        540
+        752,
+        329,
+        917,
+        446
       ]
     },
     {
@@ -426,10 +426,10 @@ const initialStateComplex = {
         'shotOrder'
       ],
       points: [
-        223,
-        734,
-        -16.5,
-        751.5
+        762,
+        550,
+        648.5,
+        686.5
       ]
     },
     {
@@ -439,17 +439,17 @@ const initialStateComplex = {
         'ShotOrder'
       ],
       points: [
-        -16.5,
-        751.5,
-        -217,
-        721
+        648.5,
+        686.5,
+        487,
+        666
       ]
     }
   ],
   stage: {
     pos: {
-      x: 587,
-      y: -96
+      x: 0,
+      y: 0
     }
   },
   connector: {
