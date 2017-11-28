@@ -44,10 +44,11 @@ const EditorContainer = styled.section`
     line-height: 1.8em;
     margin: 0;
     font-size: 1em;
-    font-family: 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
+    font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
 
     strong {
       color: #ddd;
+      font-weight: 100;
     }
   }
 `
