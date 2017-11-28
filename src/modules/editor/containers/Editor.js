@@ -122,17 +122,19 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector, nodes }) => ({ 
 
     const connectedToNode = getConnectedNode({ nodes, connectedTo })
 
-    // Connection from: model to model node.
+    // Connection from: Model to Model node.
     if ([selectedNode, connectedToNode].every(({ type }) => type === 'model')) {
       const name = prompt("Name of the field?")
       const type = prompt("Type of the relation (hasMany, hasOne)?")
 
-      dispatch(
-        addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
-      )
+      if (name && type) {
+        dispatch(
+          addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
+        )
+      }
     }
 
-    // Connection from: model to relation node.
+    // Connection from: Model to Relation node.
     if (selectedNode.type === 'model' && connectedToNode.type === 'relation') {
       dispatch(
         addEdge({
