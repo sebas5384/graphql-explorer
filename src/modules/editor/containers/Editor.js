@@ -33,7 +33,9 @@ const handleOnNodeDrag = ({ dispatch, stage }) => ({ name }) => function (pos) {
   return pos
 }
 
-const handleDoubleClick = ({ name, dispatch }) => event => {
+const handleOnDoubleClick = ({ selectedNode, dispatch }) => ({ name }) => event => {
+  // Only Model nodes can create connection.
+  if (selectedNode.type !== 'model') return
   dispatch(updateConnector({ isConnecting: true }))
 }
 
@@ -56,7 +58,8 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
 
 const Editor = ({
   width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
-  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick, handleOnNodeDrag,
+  onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick,
+  handleOnNodeDrag, handleOnDoubleClick,
   ...rest
 }) => {
   const style = {
@@ -74,12 +77,11 @@ const Editor = ({
       height={ height }
     >
       <Layer>
-        { edges.map(({ name, points, type, nodes: edgeNodes, connectedTo }) => (
+        { edges.map(({ points, type, nodes: edgeNodes, connectedTo }) => (
           <Edge
-            key={ name }
+            key={ edgeNodes.join(':') }
             active={ edgeIsActive({ edgeNodes, selectedNode }) }
             type={ type }
-            name={ name }
             points={ points }
             connectedTo={ connectedTo }
           />
@@ -91,14 +93,14 @@ const Editor = ({
 
         { nodes.map(({ name, pos, selected, type }) => (
           <Node
-            key={ name }
+            key={ name + type }
             name={ name }
             type={ type }
             selected={ selected }
             connector={ connector }
             draggable dragBoundFunc={ handleOnNodeDrag({ name }) }
             onClick={ handleOnNodeClick({ name }) }
-            onDblclick={ handleDoubleClick({ name, dispatch }) }
+            onDblclick={ handleOnDoubleClick({ name }) }
             onMouseOver={ handleMouseOver({ name, selectedNode, connector, dispatch }) }
             onMouseOut={ handleMouseOut({ name, connector, dispatch }) }
             x={ pos.x }
@@ -171,5 +173,5 @@ const mapStateToProps = ({ stage, nodes, edges, connector }) => ({
 export default compose(
   connect(mapStateToProps),
   windowDimensions(),
-  withHandlers({ onNodeClick, onStageClick, handleOnNodeDrag }),
+  withHandlers({ onNodeClick, onStageClick, handleOnNodeDrag, handleOnDoubleClick }),
 )(Editor)
