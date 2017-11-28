@@ -30,7 +30,6 @@ const connectWithPoints = ({
     : normalizePosWithStage({ stage, pos: cursorPosition })
 
   const { x: posBX, y: posBY } = destinationPosition
-  console.log([posAX, posAY, posBX, posBY])
   return { points: [posAX, posAY, posBX, posBY], active }
 }
 
