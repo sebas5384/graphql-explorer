@@ -78,5 +78,5 @@ const mapStateToProps = ({ nodes }) => ({
 
 export default compose(
   connect(mapStateToProps),
-  branch(({ node }) => (typeof node === 'undefined'), renderNothing)
+  branch(({ node }) => (typeof node === 'undefined' || node.type !== 'model'), renderNothing)
 )(NodeEdit)

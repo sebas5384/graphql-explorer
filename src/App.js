@@ -10,7 +10,9 @@ import './App.css'
 
 import Editor from './modules/editor/containers/Editor'
 import NodeEditor from './modules/editor/containers/NodeEditor'
-import { addNode, resetConnector, normalizePosWithStage } from './modules/editor/store'
+import {
+  addNode, resetConnector, resetSelectedNode, normalizePosWithStage
+} from './modules/editor/store'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -46,6 +48,7 @@ export default compose(
     keydown: event => {
       if (isHotKey('esc')(event)) {
         dispatch(resetConnector())
+        dispatch(resetSelectedNode())
       }
     }
   }))

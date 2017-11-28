@@ -15,6 +15,7 @@ export const updateNode = createAction('editor/node/UPDATE')
 export const updateField = createAction('editor/field/UPDATE')
 export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
+export const resetSelectedNode = createAction('editor/node/SELECT_RESET')
 export const addNode = createAction('editor/node/ADD')
 export const addField = createAction('editor/field/ADD')
 export const addEdge = createAction('editor/edge/ADD')
@@ -134,6 +135,12 @@ export const reducer = {
   [selectNode]: (state, { payload }) => {
     const updatedNodes = state.nodes
       .map(node => ({ ...node, selected: (node.name === payload.name) }))
+    return { ...state, nodes: updatedNodes }
+  },
+
+  [resetSelectedNode]: (state, { payload }) => {
+    const updatedNodes = state.nodes
+      .map(node => ({ ...node, selected: false }))
     return { ...state, nodes: updatedNodes }
   },
 
