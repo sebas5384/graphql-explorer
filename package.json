@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "babel-runtime": "^6.23.0",
+    "immutable": "^3.8.2",
     "is-hotkey": "^0.1.1",
     "konva": "^1.5.0",
     "lscache": "^1.1.0",
@@ -24,6 +25,9 @@
     "redux-actions": "2.2.0",
     "redux-boot": "^1.1.2",
     "redux-promise": "^0.5.3",
+    "slate": "^0.31.3",
+    "slate-react": "^0.10.17",
+    "slate-soft-break": "^0.6.0",
     "styled-components": "^2.2.3"
   },
   "devDependencies": {

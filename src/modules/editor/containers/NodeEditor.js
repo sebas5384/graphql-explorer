@@ -1,7 +1,10 @@
 import React from 'react'
-import { compose, branch, renderNothing } from 'recompose'
+import { compose, branch, renderNothing, withState, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { Editor } from 'slate-react'
+import { Value } from 'slate'
+import isHotKey from 'is-hotkey'
 
 import { getSelectedNode } from '../store'
 
@@ -36,38 +39,52 @@ const Header = styled.h1`
 const EditorContainer = styled.section`
   background: rgba(38, 25, 58, 0.97);
   max-height: 15em;
-  color: #ec63c5;
   padding: 0.9em 1.3em;
   overflow: auto;
-
-  p {
-    line-height: 1.8em;
-    margin: 0;
-    font-size: 1em;
-    font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
-
-    strong {
-      color: #ddd;
-      font-weight: 100;
-    }
-  }
 `
 
-const NodeEdit = ({ node }) => (
+const FieldName = styled.span`
+  color: #ec63c5;
+  font-weight: 600;
+`
+
+const FieldNode = styled.p`
+  line-height: 1.8em;
+  margin: 0;
+  font-size: 1em;
+  font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
+  color: #ddd;
+  font-weight: 100;
+`
+
+
+
+const renderNode = props => {
+  switch (props.node.type) {
+    case 'field': return <FieldNode { ...props } />
+  }
+}
+
+const renderMark = props => {
+  switch (props.mark.type) {
+    case 'type': return <FieldName { ...props } />
+  }
+}
+
+const NodeEdit = ({ node, value, handleOnChange, handleOnKeyDown }) => (
   <Wrapper>
     <Card>
       <Header><span>type:</span> { node.name }</Header>
     </Card>
     <Card transparent>
       <EditorContainer>
-        <p><strong>id:</strong> ID!</p>
-        <p><strong>name:</strong> String!</p>
-        <p><strong>cdaLot:</strong> CdaLot</p>
-        <p><strong>vaccine:</strong> Vaccine</p>
-        <p><strong>company:</strong> Company</p>
-        <p><strong>applicationPlace:</strong> ApplicationPlace</p>
-        <p><strong>shotOrder:</strong> ShotOrder</p>
-        <p><strong>unities:</strong> [Unity]!</p>
+        <Editor
+          value={ value }
+          onChange={ handleOnChange}
+          onKeyDown={ handleOnKeyDown }
+          renderMark={ renderMark }
+          renderNode={ renderNode }
+        />
       </EditorContainer>
     </Card>
   </Wrapper>
@@ -77,7 +94,83 @@ const mapStateToProps = ({ nodes }) => ({
   node: getSelectedNode(nodes)
 })
 
+const initialValue = Value.fromJSON({
+  document: {
+    nodes: [
+      {
+        kind: 'block',
+        type: 'field',
+        nodes: [
+          {
+            kind: 'text',
+            leaves: [
+              {
+                text: 'id',
+              },
+              {
+                text: ': ',
+              },
+              {
+                text: 'ID!',
+                marks: [
+                  {
+                    type: "type"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+})
+
+const handleOnChange = ({ setValue }) => ({ value }) => setValue(value)
+
+const handleOnKeyDown = (props) => (event, change, editor) => {
+  if (isHotKey('return')(event)) {
+    event.preventDefault()
+    change.removeMark('type')
+  }
+  
+  // Fixes a bug in slate with peer marks after deleting the first char.
+  if (
+    change.value.texts.get(0).toJS().leaves[0].text.length === 0
+    && change.value.marks.toJS().length > 0
+  ) {
+    change.removeMark('type')
+  }
+  
+  if (
+    event.key === ':'
+    && change.value.texts.get(0).toJS().leaves[0].text.split(':').length === 1
+  ) {
+    event.preventDefault()
+    change
+      .insertText(': ')
+      .splitInline()
+      .addMark('type')
+  }
+
+  if (change.value.texts.get(0).toJS().leaves[0].text.match(/^.*: $/)) {
+    change.addMark('type')
+  }
+
+  // @TODO: HORROR !!!
+  // if (
+  //   event.key.match(/[A-Za-z]/) 
+  //   && change.value.texts.get(0).toJS().leaves[0].text.match(/^.*\:$/)
+  //   && change.value.texts.toJS().leaves.length === 1
+  //   && change.value.activeMarks.toJS().length === 0
+  // ) {
+  //   change.removeMark('type').splitInline().addMark('type')
+  // }
+}
+
 export default compose(
   connect(mapStateToProps),
-  branch(({ node }) => (typeof node === 'undefined' || node.type !== 'model'), renderNothing)
+  branch(({ node }) => (typeof node === 'undefined' || node.type !== 'model'), renderNothing),
+  withState('value', 'setValue', initialValue),
+  withHandlers({ handleOnChange, handleOnKeyDown })
 )(NodeEdit)
