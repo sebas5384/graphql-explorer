@@ -128,11 +128,25 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector, nodes }) => ({ 
     if ([selectedNode, connectedToNode].every(({ type }) => type === 'model')) {
       const name = prompt("Name of the field?")
       const type = prompt("Type of the relation (hasMany, hasOne)?")
-
+ 
       if (name && type) {
-        dispatch(
-          addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
-        )
+        // Connection already exist, so it just needs a new edge.
+        const existentNode = nodes.find(node => node.name === name)
+        if (existentNode) {
+          dispatch(
+            addEdge({
+              nodeA: selectedNode.name,
+              nodeB: existentNode.name,
+              type: connectedToNode.cardinality
+            })
+          )
+        }
+        else {
+          dispatch(
+            addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
+          )
+        }
+
       }
     }
 
