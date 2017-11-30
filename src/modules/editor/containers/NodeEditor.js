@@ -148,24 +148,14 @@ const handleOnKeyDown = (props) => (event, change, editor) => {
   ) {
     event.preventDefault()
     change
-      .insertText(': ')
+      .removeMark('type')
+      .insertText(':')
       .splitInline()
-      .addMark('type')
   }
 
   if (change.value.texts.get(0).toJS().leaves[0].text.match(/^.*: $/)) {
     change.addMark('type')
   }
-
-  // @TODO: HORROR !!!
-  // if (
-  //   event.key.match(/[A-Za-z]/) 
-  //   && change.value.texts.get(0).toJS().leaves[0].text.match(/^.*\:$/)
-  //   && change.value.texts.toJS().leaves.length === 1
-  //   && change.value.activeMarks.toJS().length === 0
-  // ) {
-  //   change.removeMark('type').splitInline().addMark('type')
-  // }
 }
 
 export default compose(
