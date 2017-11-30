@@ -6,7 +6,7 @@ import { Editor } from 'slate-react'
 import { Value } from 'slate'
 import isHotKey from 'is-hotkey'
 
-import { getSelectedNode } from '../store'
+import { getSelectedNode, updateNode } from '../store'
 
 const Wrapper = styled.section``
 
@@ -57,8 +57,6 @@ const FieldNode = styled.p`
   font-weight: 100;
 `
 
-
-
 const renderNode = props => {
   switch (props.node.type) {
     case 'field': return <FieldNode { ...props } />
@@ -90,9 +88,14 @@ const NodeEdit = ({ node, value, handleOnChange, handleOnKeyDown }) => (
   </Wrapper>
 )
 
-const mapStateToProps = ({ nodes }) => ({
-  node: getSelectedNode(nodes)
-})
+const mapStateToProps = ({ nodes }) => {
+  const node = getSelectedNode(nodes)
+
+  // 3. Serialize value from node.fields[]
+  const value = node.fields || null
+
+  return ({ node, value })
+}
 
 const initialValue = Value.fromJSON({
   document: {
@@ -105,10 +108,7 @@ const initialValue = Value.fromJSON({
             kind: 'text',
             leaves: [
               {
-                text: 'id',
-              },
-              {
-                text: ': ',
+                text: 'id: ',
               },
               {
                 text: 'ID!',
@@ -126,7 +126,35 @@ const initialValue = Value.fromJSON({
   }
 })
 
-const handleOnChange = ({ setValue }) => ({ value }) => setValue(value)
+const handleOnChange = ({ setValue, node, dispatch }) => ({ value }) => {
+  // Deserialize value to [ { name, type }, { name, type } ].
+  const fields = value.document.nodes.toJS()
+    // Map field values. 
+    .map(({ nodes }) => nodes[0].leaves
+      .reduce((carry, current) => {
+        if (current.text.length < 1) return
+
+        const clean = str => str.replace(/[^a-zA-Z_[\]!]/g, '')
+
+        return current.marks.length
+          ? ({ ...carry, type: clean(current.text) })
+          : ({ ...carry, name: clean(current.text) })
+      }, {})
+    )
+    // Remove invalid fields.
+    .filter(
+      field => typeof field !== 'undefined'
+        && field.hasOwnProperty('name')
+        && field.hasOwnProperty('type')
+        && Object.values(field).every(value => value.length)
+    )
+
+  // 2. Dispatch an action to save the unserialized value to node.fields[].
+  // @TODO For better perfomance create an action to update the node's fields.
+  dispatch(updateNode({ ...node, fields }))
+
+  setValue(value)
+}
 
 const handleOnKeyDown = (props) => (event, change, editor) => {
   if (isHotKey('return')(event)) {
