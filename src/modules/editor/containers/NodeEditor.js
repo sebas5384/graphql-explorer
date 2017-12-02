@@ -7,7 +7,7 @@ import { Value } from 'slate'
 import isHotKey from 'is-hotkey'
 
 import { getSelectedNode, updateNodeFields } from '../store'
-import { deserializeFields } from '../lib/deserialize'
+import { deserializeFields, serializeFields } from '../lib/serializers'
 
 const Wrapper = styled.section``
 
@@ -139,26 +139,7 @@ const componentWillMount = function () {
 
 const handleOnChange = ({ node, dispatch, setValue }) => ({ value }) => {
   // Deserialize value to [ { name, type }, { name, type } ].
-  const fields = value.document.nodes.toJS()
-    // Map field values. 
-    .map(({ nodes }) => nodes[0].leaves
-      .reduce((carry, current) => {
-        if (current.text.length < 1) return
-
-        const clean = str => str.replace(/[^a-zA-Z_[\]!]/g, '')
-
-        return current.marks.length
-          ? ({ ...carry, type: clean(current.text) })
-          : ({ ...carry, name: clean(current.text) })
-      }, {})
-    )
-    // Remove invalid fields.
-    .filter(
-      field => typeof field !== 'undefined'
-        && field.hasOwnProperty('name')
-        && field.hasOwnProperty('type')
-        && Object.values(field).every(value => value.length)
-    )
+  const fields = serializeFields(value.toJS())
 
   // Dispatch an action to save the unserialized value to node.fields[].
   // @TODO [ASAP] Find better perfomance, for ex. debaunce the dispatching.
