@@ -12,7 +12,7 @@ import { middlePositions } from './lib/middlePositions'
  */
 export const updateStage = createAction('editor/stage/UPDATE')
 export const updateNode = createAction('editor/node/UPDATE')
-export const updateField = createAction('editor/field/UPDATE')
+export const updateNodeFields = createAction('editor/field/UPDATE')
 export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
 export const resetSelectedNode = createAction('editor/node/SELECT_RESET')
@@ -130,6 +130,14 @@ export const reducer = {
       })
 
     return { ...state, edges: updatedEdges }
+  },
+
+  [updateNodeFields]: (state, { payload: { node: editingNode, fields } }) => {
+    const updatedNodes = state.nodes.map(node => {
+      if (node.name !== editingNode.name) return node
+      return { ...node, fields }
+    })
+    return { ...state, nodes: updatedNodes }
   },
 
   [selectNode]: (state, { payload }) => {

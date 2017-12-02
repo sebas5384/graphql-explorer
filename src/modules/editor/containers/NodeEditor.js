@@ -1,12 +1,13 @@
 import React from 'react'
-import { compose, branch, renderNothing, withState, withHandlers } from 'recompose'
+import { compose, branch, renderNothing, withState, withHandlers, lifecycle } from 'recompose'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Editor } from 'slate-react'
 import { Value } from 'slate'
 import isHotKey from 'is-hotkey'
 
-import { getSelectedNode, updateNode } from '../store'
+import { getSelectedNode, updateNodeFields } from '../store'
+import { deserializeFields } from '../lib/deserialize'
 
 const Wrapper = styled.section``
 
@@ -41,6 +42,11 @@ const EditorContainer = styled.section`
   max-height: 15em;
   padding: 0.9em 1.3em;
   overflow: auto;
+
+  span[data-slate-zero-width='true'] {
+    position: relative;
+    top: 3px;
+  }
 `
 
 const FieldName = styled.span`
@@ -77,25 +83,20 @@ const NodeEdit = ({ node, value, handleOnChange, handleOnKeyDown }) => (
     <Card transparent>
       <EditorContainer>
         <Editor
+          placeholder='-- insert fields here --'
           value={ value }
           onChange={ handleOnChange}
           onKeyDown={ handleOnKeyDown }
           renderMark={ renderMark }
           renderNode={ renderNode }
+          autoFocus={ true }
+          spellCheck={ false }
+          tabIndex={ 0 }
         />
       </EditorContainer>
     </Card>
   </Wrapper>
 )
-
-const mapStateToProps = ({ nodes }) => {
-  const node = getSelectedNode(nodes)
-
-  // 3. Serialize value from node.fields[]
-  const value = node.fields || null
-
-  return ({ node, value })
-}
 
 const initialValue = Value.fromJSON({
   document: {
@@ -103,30 +104,40 @@ const initialValue = Value.fromJSON({
       {
         kind: 'block',
         type: 'field',
-        nodes: [
-          {
-            kind: 'text',
-            leaves: [
-              {
-                text: 'id: ',
-              },
-              {
-                text: 'ID!',
-                marks: [
-                  {
-                    type: "type"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
+        nodes: []
       }
     ]
   }
 })
 
-const handleOnChange = ({ setValue, node, dispatch }) => ({ value }) => {
+
+const mapStateToProps = ({ nodes }) => {
+  const node = getSelectedNode(nodes)
+  if (!node) return {}
+  return { node }
+}
+
+const componentWillReceiveProps = function ({ node: nextNode, setValue, value }) {
+  const { node: prevNode } = this.props
+  if (nextNode.name === prevNode.name) return
+  
+  if (!nextNode.fields.length) return setValue(initialValue)
+  
+  // Serialize new value from node.fields[] only when a new node is selected.
+  const nextValue = Value.fromJSON(deserializeFields(nextNode.fields))
+  setValue(nextValue)
+}
+
+const componentWillMount = function () {
+  const { node, setValue } = this.props
+  
+  if (!node.fields.length) return setValue(initialValue)
+
+  const value = Value.fromJSON(deserializeFields(node.fields))
+  setValue(value)
+}
+
+const handleOnChange = ({ node, dispatch, setValue }) => ({ value }) => {
   // Deserialize value to [ { name, type }, { name, type } ].
   const fields = value.document.nodes.toJS()
     // Map field values. 
@@ -149,10 +160,9 @@ const handleOnChange = ({ setValue, node, dispatch }) => ({ value }) => {
         && Object.values(field).every(value => value.length)
     )
 
-  // 2. Dispatch an action to save the unserialized value to node.fields[].
-  // @TODO For better perfomance create an action to update the node's fields.
-  dispatch(updateNode({ ...node, fields }))
-
+  // Dispatch an action to save the unserialized value to node.fields[].
+  // @TODO [ASAP] Find better perfomance, for ex. debaunce the dispatching.
+  dispatch(updateNodeFields({ node, fields }))
   setValue(value)
 }
 
@@ -162,7 +172,7 @@ const handleOnKeyDown = (props) => (event, change, editor) => {
     change.removeMark('type')
   }
   
-  // Fixes a bug in slate with peer marks after deleting the first char.
+  // Fixes a bug in slate (maybe) with peer marks after deleting the first char.
   if (
     change.value.texts.get(0).toJS().leaves[0].text.length === 0
     && change.value.marks.toJS().length > 0
@@ -188,7 +198,8 @@ const handleOnKeyDown = (props) => (event, change, editor) => {
 
 export default compose(
   connect(mapStateToProps),
-  branch(({ node }) => (typeof node === 'undefined' || node.type !== 'model'), renderNothing),
   withState('value', 'setValue', initialValue),
-  withHandlers({ handleOnChange, handleOnKeyDown })
+  branch(({ node }) => (typeof node === 'undefined' || node.type !== 'model'), renderNothing),
+  withHandlers({ handleOnChange, handleOnKeyDown }),
+  lifecycle({ componentWillReceiveProps, componentWillMount })
 )(NodeEdit)

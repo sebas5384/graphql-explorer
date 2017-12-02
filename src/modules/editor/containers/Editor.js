@@ -117,11 +117,6 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector, nodes }) => ({ 
   const { isConnecting, connectedTo } = connector
   if (isConnecting && connectedTo) {
 
-    // @TODO Avoid to create same relations.
-    // if (edgeName && !edges.some(edge => edge.name === edgeName)) {
-    //   dispatch(addEdge({ name: edgeName }))
-    // }
-
     const connectedToNode = getConnectedNode({ nodes, connectedTo })
 
     // Connection from: Model to Model node.

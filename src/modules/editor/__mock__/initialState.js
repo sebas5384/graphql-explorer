@@ -7,6 +7,7 @@ const initialStateComplex = {
         y: 313
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -16,6 +17,7 @@ const initialStateComplex = {
         y: 605
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -25,6 +27,7 @@ const initialStateComplex = {
         y: 50
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -54,6 +57,7 @@ const initialStateComplex = {
         y: 453
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -63,6 +67,7 @@ const initialStateComplex = {
         y: 243
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -72,6 +77,7 @@ const initialStateComplex = {
         y: 204
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -91,6 +97,7 @@ const initialStateComplex = {
         y: 531
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -110,6 +117,7 @@ const initialStateComplex = {
         y: 489
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
@@ -138,6 +146,7 @@ const initialStateComplex = {
         y: 268
       },
       type: 'model',
+      fields: [],
       selected: false
     },
     {
