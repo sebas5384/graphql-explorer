@@ -9,7 +9,6 @@ import Edge from '../components/Edge'
 import ConnectorEdge from '../containers/ConnectorEdge'
 
 import {
-  addEdge,
   updateStage,
   updateNode,
   selectNode,
@@ -18,8 +17,7 @@ import {
   updateConnector,
   resetConnector,
   normalizePosWithStage,
-  addRelation,
-  getModelFromRelation
+  addRelation
 } from '../store'
 
 // @TODO Convert all these handlers to use withHandlers.

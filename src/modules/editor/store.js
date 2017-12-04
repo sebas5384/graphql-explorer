@@ -242,7 +242,7 @@ export const middleware = {
     }))
 
     // Connection already exist, so it just needs a new edge.
-    const existentNode = nodes.find(node => node.name === name || node.name )
+    const existentNode = nodes.find(node => node.name === name)
     if (existentNode) {
       dispatch(addEdge({ nodeA, nodeB, type }))
 

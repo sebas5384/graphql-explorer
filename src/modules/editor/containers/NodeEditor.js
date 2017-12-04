@@ -111,15 +111,18 @@ const initialValue = Value.fromJSON({
 })
 
 
-const mapStateToProps = ({ nodes }) => {
+const mapStateToProps = ({ nodes, edges }) => {
   const node = getSelectedNode(nodes)
   if (!node) return {}
-  return { node }
+  return { node, edges }
 }
 
-const componentWillReceiveProps = function ({ node: nextNode, setValue, value }) {
-  const { node: prevNode } = this.props
-  if (nextNode.name === prevNode.name) return
+const componentWillReceiveProps = function ({ node: nextNode, setValue, value, edges: nextEdges }) {
+  const { node: prevNode, edges: prevEdges } = this.props
+
+  if (nextNode.name === prevNode.name && nextEdges.length === prevEdges.length) {
+    return
+  }
   
   if (!nextNode.fields.length) return setValue(initialValue)
   
