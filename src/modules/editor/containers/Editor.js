@@ -10,7 +10,6 @@ import ConnectorEdge from '../containers/ConnectorEdge'
 
 import {
   addEdge,
-  addField,
   updateStage,
   updateNode,
   selectNode,
@@ -18,7 +17,9 @@ import {
   getConnectedNode,
   updateConnector,
   resetConnector,
-  normalizePosWithStage
+  normalizePosWithStage,
+  addRelation,
+  getModelFromRelation
 } from '../store'
 
 // @TODO Convert all these handlers to use withHandlers.
@@ -125,33 +126,21 @@ const onNodeClick = ({ dispatch, edges, selectedNode, connector, nodes }) => ({ 
       const type = prompt("Type of the relation (hasMany, hasOne)?")
  
       if (name && type) {
-        // Connection already exist, so it just needs a new edge.
-        const existentNode = nodes.find(node => node.name === name)
-        if (existentNode) {
-          dispatch(
-            addEdge({
-              nodeA: selectedNode.name,
-              nodeB: existentNode.name,
-              type: connectedToNode.cardinality
-            })
-          )
-        }
-        else {
-          dispatch(
-            addField({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
-          )
-        }
-
+        dispatch(
+          addRelation({ name, nodeA: selectedNode.name, nodeB: connectedTo, type })
+        )
       }
     }
 
     // Connection from: Model to Relation node.
     if (selectedNode.type === 'model' && connectedToNode.type === 'relation') {
       dispatch(
-        addEdge({
+        addRelation({
+          name,
           nodeA: selectedNode.name,
           nodeB: connectedTo,
-          type: connectedToNode.cardinality
+          type: connectedToNode.cardinality,
+          isModelToRelation: true
         })
       )
     }

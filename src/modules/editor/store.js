@@ -17,8 +17,9 @@ export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
 export const resetSelectedNode = createAction('editor/node/SELECT_RESET')
 export const addNode = createAction('editor/node/ADD')
-export const addField = createAction('editor/field/ADD')
+export const addRelation = createAction('editor/relation/ADD')
 export const addEdge = createAction('editor/edge/ADD')
+export const addField = createAction('editor/field/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
 
@@ -59,6 +60,11 @@ const centerPositionsByType = type => {
 export const getSelectedNode = (nodes = []) => nodes.find(node => node.selected)
 export const getConnectedNode = ({ nodes = [], connectedTo }) => nodes
   .find(({ name }) => name === connectedTo)
+export const getModelFromRelation = ({ edges, nodeB }) => {
+  const edge = edges.find(({ nodes }) => nodes[0] === nodeB)
+  if (!edge) return
+  return edge.nodes[1]
+}
 
 /*
  * Initial State.
@@ -81,7 +87,9 @@ export const reducer = {
   [BOOT]: (state, action) => getInitialState(state),
 
   [addNode]: (state, { payload: newNode }) => {
+    const defaultNode = { fields: [] }
     const normalizedNode = {
+      ...defaultNode,
       ...newNode,
       pos: newNode.pos
     }
@@ -95,6 +103,25 @@ export const reducer = {
       points: [],
     }
     return { ...state, edges: state.edges.concat(newEdge)}
+  },
+
+  [addField]: (state, { payload: { nodeName, name, type } }) => {
+    // Find the source Node.
+    const sourceNode = state.nodes.find(node => node.name === nodeName)
+    
+    // Avoid duplicate.
+    if (sourceNode.fields.find(field => field.name === name)) return state
+    
+    // Add new field
+    const updatedNodes = state.nodes.map(node => node.name === nodeName
+      ? ({
+        ...node,
+        fields: node.fields.concat({ name, type }),
+      })
+      : node
+    )
+
+    return { ...state, nodes: updatedNodes }
   },
 
   [updateNode]: (state, { payload }) => {
@@ -196,10 +223,31 @@ export const middleware = {
 
     return result
   },
-  [addField]: ({ dispatch, getState }) => next => action => {
+  [addRelation]: ({ dispatch, getState }) => next => action => {
     const result = next(action)
-    const { nodes } = getState()
-    const { name, nodeA, nodeB, type } = action.payload
+    const { nodes, edges } = getState()
+    const { name, nodeA, nodeB, type, isModelToRelation } = action.payload
+    
+    const fieldType = ({ nodeB, type }) => {
+      const node = isModelToRelation
+        ? getModelFromRelation({ edges, nodeB })
+        : nodeB
+      return type === 'hasMany' ? `[${node}]` : node
+    }
+
+    dispatch(addField({
+      name,
+      nodeName: nodeA,
+      type: fieldType({ nodeB, type })
+    }))
+
+    // Connection already exist, so it just needs a new edge.
+    const existentNode = nodes.find(node => node.name === name || node.name )
+    if (existentNode) {
+      dispatch(addEdge({ nodeA, nodeB, type }))
+
+      return result
+    }
 
     const selectedNodes = nodes.filter(
       node => [nodeA, nodeB].some(name => node.name === name)
@@ -228,12 +276,12 @@ const enhancer = createStore => (reducer, initialState, enhancer) => {
   const store = createStore(reducer, initialState, enhancer)
 
   // Updates local storage.
-  store.subscribe(() => {
-    const state = store.getState()
+  // store.subscribe(() => {
+  //   const state = store.getState()
 
-    lscache.set('nodes', state.nodes)
-    lscache.set('edges', state.edges)
-  })
+  //   lscache.set('nodes', state.nodes)
+  //   lscache.set('edges', state.edges)
+  // })
 
   return store
 }
