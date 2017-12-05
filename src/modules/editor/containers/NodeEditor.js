@@ -50,11 +50,6 @@ const EditorContainer = styled.section`
   }
 `
 
-const FieldName = styled.span`
-  color: #ec63c5;
-  font-weight: 600;
-`
-
 const FieldNode = styled.p`
   line-height: 1.8em;
   margin: 0;
@@ -62,6 +57,11 @@ const FieldNode = styled.p`
   font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco', monospace;
   color: #ddd;
   font-weight: 100;
+`
+
+const FieldName = styled.span`
+  color: #ec63c5;
+  font-weight: 600;
 `
 
 const renderNode = props => {
