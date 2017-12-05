@@ -156,8 +156,8 @@ const handleOnChange = ({ node, dispatch, setValue }) => ({ value }) => {
 
 const handleOnKeyDown = (props) => (event, change, editor) => {
   if (isHotKey('return')(event)) {
-    event.preventDefault()
-    change.removeMark('type')
+    change.insertBlock('field')
+    return false
   }
   
   // Fixes a bug in slate (maybe) with peer marks after deleting the first char.
