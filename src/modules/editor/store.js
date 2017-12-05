@@ -65,6 +65,7 @@ export const getModelFromRelation = ({ edges, nodeB }) => {
   if (!edge) return
   return edge.nodes[1]
 }
+export const typeToModel = type => type.replace(/[^A-Za-z_]*/g, '')
 
 /*
  * Initial State.

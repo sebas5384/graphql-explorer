@@ -8,6 +8,7 @@ import isHotKey from 'is-hotkey'
 
 import { getSelectedNode, updateNodeFields } from '../store'
 import { deserializeFields, serializeFields } from '../lib/serializers'
+import { fieldIsInvalid } from '../lib/helpers';
 
 const Wrapper = styled.section``
 
@@ -143,6 +144,9 @@ const componentWillMount = function () {
 const handleOnChange = ({ node, dispatch, setValue }) => ({ value }) => {
   // Deserialize value to [ { name, type }, { name, type } ].
   const fields = serializeFields(value.toJS())
+  
+  // Avoid creating invalid types.
+  if (fields.some(fieldIsInvalid)) return setValue(value)
 
   // Dispatch an action to save the unserialized value to node.fields[].
   // @TODO [ASAP] Find better perfomance, for ex. debaunce the dispatching.
