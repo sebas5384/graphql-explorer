@@ -270,6 +270,28 @@ export const middleware = {
     dispatch(addEdge({ nodeA: name, nodeB, type }))
     
     return result
+  },
+
+  [updateNodeFields]: store => next => action => {
+    const { node, fields } = action.payload
+    const result = next(action)
+    const { nodes } = store.getState()
+
+    // Get difference of fields.
+    const diffFields = R.difference(node.fields, fields)
+
+    // Get fields that are Model nodes.
+    const modelFields = nodes.filter(
+      ({ name }) => diffFields.some(
+        field => typeToModel(field.type) === name
+      )
+    )
+    if (!modelFields.length) return result
+
+    // Remove relation or sync.
+    console.log(modelFields, 'REMOVE RELATIONS')
+
+    return result
   }
 }
 
