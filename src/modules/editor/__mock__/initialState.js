@@ -470,7 +470,7 @@ const initialStateComplex = {
 const initialStateSimple = {
   nodes: [],
   edges: [],
-  stage: { pos: { x: -1, y: 0 } }
+  stage: { pos: { x: 0, y: 0 } }
 }
 
 export default initialStateComplex;

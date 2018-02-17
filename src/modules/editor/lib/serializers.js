@@ -31,10 +31,14 @@ export const serializeFields = ({ document: { nodes } }) => nodes
       if (current.text.length < 1) return
 
       const clean = str => str.replace(/[^a-zA-Z_[\]!]/g, '')
+      const value = clean(current.text)
 
-      return current.marks.length
-        ? ({ ...carry, type: clean(current.text) })
-        : ({ ...carry, name: clean(current.text) })
+      // Leaves with marks are the "type".
+      const propName = current.marks.length
+        ? 'type'
+        : 'name'
+
+      return ({ ...carry, [propName]: value })
     }, {})
   )
   // Remove invalid fields.

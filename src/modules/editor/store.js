@@ -6,6 +6,7 @@ import * as R from 'ramda'
 import initialStateMock from './__mock__/initialState'
 
 import { middlePositions } from './lib/middlePositions'
+import { fieldsTypeIsModel } from './lib/helpers'
 
 /*
  * Actions.
@@ -19,6 +20,7 @@ export const resetSelectedNode = createAction('editor/node/SELECT_RESET')
 export const addNode = createAction('editor/node/ADD')
 export const addRelation = createAction('editor/relation/ADD')
 export const addEdge = createAction('editor/edge/ADD')
+export const deleteEdge = createAction('editor/edge/DELETE')
 export const addField = createAction('editor/field/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
@@ -65,7 +67,6 @@ export const getModelFromRelation = ({ edges, nodeB }) => {
   if (!edge) return
   return edge.nodes[1]
 }
-export const typeToModel = type => type.replace(/[^A-Za-z_]*/g, '')
 
 /*
  * Initial State.
@@ -104,6 +105,14 @@ export const reducer = {
       points: [],
     }
     return { ...state, edges: state.edges.concat(newEdge)}
+  },
+
+  [deleteEdge]: (state, { payload: { nodeA, nodeB, type }}) => {
+    const edges = state.edges
+      .filter(({ nodes }) => !nodes
+        .every(name => nodes[0] === nodeA && nodes[1] === nodeB)
+      )
+    return { ...state, edges }
   },
 
   [addField]: (state, { payload: { nodeName, name, type } }) => {
@@ -224,6 +233,7 @@ export const middleware = {
 
     return result
   },
+
   [addRelation]: ({ dispatch, getState }) => next => action => {
     const result = next(action)
     const { nodes, edges } = getState()
@@ -243,10 +253,17 @@ export const middleware = {
     }))
 
     // Connection already exist, so it just needs a new edge.
-    const existentNode = nodes.find(node => node.name === name)
-    if (existentNode) {
-      dispatch(addEdge({ nodeA, nodeB, type }))
+    const existentNodeRelation = nodes.find(node => node.name === name)
+    if (existentNodeRelation) {
+      
+      // Use the name of the relation as nodeA if already exist a relation
+      // which it source is nodeA and destination is the name of the relation
+      // so in that case we add an edge from the relation to the nodeB.
+      const sourceNode = edges.some(({ nodes }) => nodes[0] === nodeA && nodes[1] === name)
+        ? name
+        : nodeA
 
+      dispatch(addEdge({ nodeA: sourceNode, nodeB, type }))
       return result
     }
 
@@ -278,18 +295,30 @@ export const middleware = {
     const { nodes } = store.getState()
 
     // Get difference of fields.
-    const diffFields = R.difference(node.fields, fields)
+    const diffFieldsToDelete = R.difference(node.fields, fields)
+    const diffFieldsToAdd = R.difference(fields, node.fields)
 
+    const modelFieldsToAdd = diffFieldsToAdd.filter(fieldsTypeIsModel(nodes))
+    if (modelFieldsToAdd.length) {
+      diffFieldsToAdd.forEach(({ name, type }) => {
+        store.dispatch(addRelation({
+          name,
+          nodeA: node.name,
+          nodeB: type,
+          // @TODO Get cardinality if it has '[...]'.
+          type: 'hasOne',
+        }))
+      })
+    }
+    
     // Get fields that are Model nodes.
-    const modelFields = nodes.filter(
-      ({ name }) => diffFields.some(
-        field => typeToModel(field.type) === name
-      )
-    )
-    if (!modelFields.length) return result
+    const modelFieldsToDelete = diffFieldsToDelete.filter(fieldsTypeIsModel(nodes))
+    if (!modelFieldsToDelete.length) return result
 
     // Remove relation or sync.
-    console.log(modelFields, 'REMOVE RELATIONS')
+    modelFieldsToDelete.forEach(({ name, type }) => {
+      store.dispatch(deleteEdge({ nodeA: name, nodeB: type }))
+    })
 
     return result
   }
@@ -299,12 +328,12 @@ const enhancer = createStore => (reducer, initialState, enhancer) => {
   const store = createStore(reducer, initialState, enhancer)
 
   // Updates local storage.
-  // store.subscribe(() => {
-  //   const state = store.getState()
+  store.subscribe(() => {
+    const state = store.getState()
 
-  //   lscache.set('nodes', state.nodes)
-  //   lscache.set('edges', state.edges)
-  // })
+    lscache.set('nodes', state.nodes)
+    lscache.set('edges', state.edges)
+  })
 
   return store
 }
