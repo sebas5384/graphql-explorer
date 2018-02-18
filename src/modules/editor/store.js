@@ -22,6 +22,7 @@ export const addEdge = createAction('editor/edge/ADD')
 export const addField = createAction('editor/field/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
+export const updateContextualDelete = createAction('editor/contextualDelete/UPDATE')
 
 /*
  * Helper to normalize positions by stage position / offset.
@@ -78,6 +79,11 @@ const getInitialState = state => ({
   connector: {
     isConnecting: false,
     connectedTo: null,
+  },
+  contextualDelete: {
+    isActive: false,
+    targets: [],
+    pos: { x: 0, y: 0 }
   }
 })
 
@@ -190,6 +196,13 @@ export const reducer = {
 
   [resetConnector]: (state, action) => {
     return { ...state, connector: getInitialState(state).connector }
+  },
+
+  [updateContextualDelete]: (state, { payload }) => {
+    return {
+      ...state,
+      contextualDelete: { ...state.contextualDelete, ...payload }
+    }
   }
 }
 
