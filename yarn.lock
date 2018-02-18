@@ -2472,7 +2472,7 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs@^0.8.1, fbjs@^0.8.14, fbjs@^0.8.16, fbjs@^0.8.5, fbjs@^0.8.9:
+fbjs@^0.8.1, fbjs@^0.8.16, fbjs@^0.8.5, fbjs@^0.8.9:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -5219,8 +5219,8 @@ react-dev-utils@^4.2.1:
     text-table "0.2.0"
 
 react-dom@^16.0.0:
-  version "16.1.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.1.1.tgz#b2e331b6d752faf1a2d31399969399a41d8d45f8"
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
@@ -5236,11 +5236,11 @@ react-immutable-proptypes@^2.1.0:
   resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
 
 react-konva@^1.6.2:
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-1.6.2.tgz#03720beb9422717d00dee5942c87800c3ba1afde"
+  version "1.6.6"
+  resolved "https://registry.yarnpkg.com/react-konva/-/react-konva-1.6.6.tgz#cc12f3f2b8d0b458b7089946d76cc7e1d5cbc8c0"
   dependencies:
-    fbjs "^0.8.14"
-    react-reconciler "^0.5.0"
+    fbjs "^0.8.16"
+    react-reconciler "^0.7.0"
 
 react-motion-loop@^2.0.0:
   version "2.0.0"
@@ -5262,9 +5262,9 @@ react-portal@^3.1.0:
   dependencies:
     prop-types "^15.5.8"
 
-react-reconciler@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.5.0.tgz#4c4cdfa2ec8f4f35ebf6305ed65fcef9b3d5d6e7"
+react-reconciler@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.7.0.tgz#9614894103e5f138deeeb5eabaf3ee80eb1d026d"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
@@ -5353,8 +5353,8 @@ react-window-dimensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/react-window-dimensions/-/react-window-dimensions-1.0.1.tgz#35116bc9b8a471ab6293ad3fdc4a3f14eb47092c"
 
 react@^16.1.1:
-  version "16.1.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.1.1.tgz#d5c4ef795507e3012282dd51261ff9c0e824fe1f"
+  version "16.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"

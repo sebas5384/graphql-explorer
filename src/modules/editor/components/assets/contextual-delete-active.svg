@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="69px" height="55px" viewBox="0 0 69 55" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Contextual menu two Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M3.9480552,2.30975907 C34.8590161,-0.561965704 52.1471629,-0.561965704 55.8124956,2.30975907 C61.3104946,6.61734623 68.7786057,32.7859282 55.8124956,42.9446512 C42.8463855,53.1033742 9.93121961,47.632357 3.9480552,42.9446512 C-0.040721073,39.819514 -0.040721073,26.2745499 3.9480552,2.30975907 Z" id="path-1"></path>
+    </defs>
+    <g id="Real-example" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-123.000000, -509.000000)">
+        <g id="Contextual-menu-two-Copy" transform="translate(126.000000, 512.000000)">
+            <g id="Path-2">
+                <use fill="#F81C78" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <path stroke="#FF68C5" stroke-width="3" d="M3.80929804,0.816190708 C35.3737444,-2.1162449 52.5955185,-2.1162449 56.7375978,1.12900262 C60.0426229,3.71843262 63.2992405,11.9651791 64.2272503,20.2663789 C65.3635849,30.4310777 63.0696446,39.1643585 56.7375978,44.1254076 C50.5109484,49.0038798 39.7280258,50.8196638 27.1650733,50.0089484 C16.7114965,49.3343558 6.46095449,46.8190224 3.02295294,44.1254076 C-1.63992995,40.4721195 -1.63992995,26.7466228 2.46841073,2.06348232 L2.65821462,0.923129952 L3.80929804,0.816190708 Z"></path>
+            </g>
+            <path d="M23.3627273,32.5714286 L40.7736364,15.4285714" id="Line-3" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"></path>
+            <path d="M41.5121343,32.2820764 L24,15" id="Line-3-Copy" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"></path>
+        </g>
+    </g>
+</svg>
