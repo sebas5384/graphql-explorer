@@ -23,6 +23,7 @@ export const addField = createAction('editor/field/ADD')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
 export const updateContextualDelete = createAction('editor/contextualDelete/UPDATE')
+export const resetContextualDelete = createAction('editor/contextualDelete/RESET')
 
 /*
  * Helper to normalize positions by stage position / offset.
@@ -196,6 +197,10 @@ export const reducer = {
 
   [resetConnector]: (state, action) => {
     return { ...state, connector: getInitialState(state).connector }
+  },
+
+  [resetContextualDelete]: (state, action) => {
+    return { ...state, contextualDelete: getInitialState(state).contextualDelete }
   },
 
   [updateContextualDelete]: (state, { payload }) => {

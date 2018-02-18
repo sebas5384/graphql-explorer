@@ -19,7 +19,8 @@ import {
   resetConnector,
   normalizePosWithStage,
   addRelation,
-  updateContextualDelete
+  updateContextualDelete,
+  resetContextualDelete
 } from '../store'
 
 const isRightClick = ({ buttons = 0 }) => buttons === 2
@@ -159,6 +160,8 @@ const onNodeClick = ({ dispatch, stage, edges, selectedNode, connector, nodes })
   // Selecting a Node.
   dispatch(selectNode({ name }))
 
+  // Reset contextual delete menu when selecting a node.
+  dispatch(resetContextualDelete())
   // Contextual menu (right click) of Node.
   if (event.evt.button === 2) {
     dispatch(updateContextualDelete({
