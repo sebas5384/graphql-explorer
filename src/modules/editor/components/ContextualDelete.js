@@ -1,6 +1,6 @@
 import React from 'react'
 import { Image } from 'react-konva'
-import { compose, withState, lifecycle, withHandlers } from 'recompose'
+import { compose, withState, lifecycle } from 'recompose'
 
 import activeDeleteImg from './assets/contextual-delete-active.svg'
 import defaultDeleteImg from './assets/contextual-delete.svg'
@@ -15,12 +15,13 @@ const ContextualDelete = ({ pos, image, handleOnClick, handleOnMouseLeave }) => 
       onClick={ handleOnClick }
       onMouseLeave={ handleOnMouseLeave }
       image={ image }
+      rotation={ 10 }
     />
   )
 }
 
 function componentWillMount() {
-  const { setImage, type } = this.props
+  const { setImage } = this.props
 
   const defaultImage = new window.Image()
   defaultImage.src = defaultDeleteImg
@@ -29,7 +30,7 @@ function componentWillMount() {
   const activeImage = new window.Image()
   activeImage.src = activeDeleteImg
   activeImage.onload = () => {
-    setTimeout(() => setImage(activeImage), 200)
+    setTimeout(() => setImage(activeImage), 100)
   }
 }
 
