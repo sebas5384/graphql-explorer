@@ -23,7 +23,8 @@ import {
   resetContextualDelete
 } from '../store'
 
-const isRightClick = ({ buttons = 0 }) => buttons === 2
+const isRightClick = ({ button = 0 }) => button === 2
+const isLeftClick = ({ button = 0 }) => button === 0
 
 // @TODO Convert all these handlers to use withHandlers.
 const handleDragStage = ({ dispatch, stage }) => function (pos, event) {
@@ -161,9 +162,11 @@ const onNodeClick = ({ dispatch, stage, edges, selectedNode, connector, nodes })
   dispatch(selectNode({ name }))
 
   // Reset contextual delete menu when selecting a node.
-  dispatch(resetContextualDelete())
+  if (isLeftClick(event.evt)) {
+    dispatch(resetContextualDelete())
+  }
   // Contextual menu (right click) of Node.
-  if (event.evt.button === 2) {
+  if (isRightClick(event.evt)) {
     dispatch(updateContextualDelete({
       isActive: true,
       pos: normalizePosWithStage({

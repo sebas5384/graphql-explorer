@@ -2,7 +2,11 @@ import ContextualDelete from '../components/ContextualDelete'
 import { compose, withHandlers, branch, renderNothing, lifecycle } from 'recompose'
 import { connect } from 'react-redux'
 
-import { updateContextualDelete, getSelectedNode } from '../store'
+import {
+  updateContextualDelete,
+  getSelectedNode,
+  markNodeReadyToDelete
+} from '../store'
 
 const mapStateToProps = ({ contextualDelete, nodes }) => {
   return {
@@ -11,7 +15,7 @@ const mapStateToProps = ({ contextualDelete, nodes }) => {
   }
 }
 
-const handleOnMouseLeave = ({ isActive, dispatch }) => event => {
+const handleOnMouseLeave = ({ isActive, dispatch, selectedNode }) => event => {
   dispatch(updateContextualDelete({ isActive: false }))
   document.body.style.cursor = 'default'
 }
@@ -23,9 +27,10 @@ function componentWillReceiveProps(nextProps) {
   return nextProps
 }
 
-const handleOnClick = ({ dispatch, selectedNode }) => () => {
-  console.log('DELETE:', selectedNode)
+const handleOnClick = ({ dispatch, selectedNode: { name, type } }) => () => {
   dispatch(updateContextualDelete({ isActive: false }))
+  // Avoid recursive when is a relation node.
+  dispatch(markNodeReadyToDelete({ name, recursive: type !== 'relation' }))
 }
 
 export default compose(

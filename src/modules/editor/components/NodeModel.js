@@ -2,6 +2,7 @@ import React from 'react'
 import { Image, Group, Circle, Text } from 'react-konva'
 import { compose, lifecycle, withState } from 'recompose'
 import { spring, Motion } from 'react-motion'
+import { connect } from 'react-redux'
 
 import nodeImg from './assets/node.svg'
 import nodeRelationImg from './assets/relation.svg'
@@ -42,7 +43,13 @@ const TextLabel = ({ text }) => (
   />
 )
 
-const ConnectingCircle = ({ active = false }) => (
+const strokeColor = ({ active, deleting }) => {
+  if (deleting) return '#FF0000'
+  if (active) return '#FF68C5'
+  return '#0099FF'
+}
+
+const AnimatedCircle = ({ active = false, deleting = false }) => (
   <Motion
     defaultStyle={{ rotation: 0 }}
     style={{ rotation: spring(-10, { stiffness: 60, damping: 0 }) }}
@@ -51,7 +58,7 @@ const ConnectingCircle = ({ active = false }) => (
       <Circle
         { ...selectedCircleProps }
         rotation={ rotation }
-        stroke={ active ? '#FF68C5' : '#0099FF' }
+        stroke={ strokeColor({ active, deleting }) }
       />
     ) }
   </Motion>
@@ -67,16 +74,17 @@ const Node = ({
   setImage,
   connector: { isConnecting, connectedTo },
   isConnected,
+  isDeleting,
   ...props
 }) => {
   return (
     <Group { ...props }>
       <Circle { ...strokeCircleProps } />
-      { (!isConnecting && selected) &&
+      { (!isConnecting && selected && !isDeleting) &&
         <Circle { ...selectedCircleProps } />
       }
-      { ((isConnecting && selected) || isConnected) &&
-        <ConnectingCircle active={ isConnected } />
+      { ((isConnecting && selected) || isConnected || isDeleting) &&
+        <AnimatedCircle active={ isConnected } deleting={ isDeleting} />
       }
       <Group
         x={ 0 } y={ 0 }
@@ -100,7 +108,12 @@ function componentWillMount () {
   image.onload = () => setImage(image)
 }
 
+const mapStateToProps = ({ contextualDelete: { targets, isActive } }, { name }) => ({
+  isDeleting: targets.some(targetName => targetName === name)
+})
+
 export default compose(
+  connect(mapStateToProps),
   withState('image', 'setImage', null),
   lifecycle({ componentWillMount })
 )(Node)
