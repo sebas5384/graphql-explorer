@@ -15,6 +15,7 @@ export const updateNode = createAction('editor/node/UPDATE')
 export const updateNodeFields = createAction('editor/field/UPDATE')
 export const updateEdge = createAction('editor/edge/UPDATE')
 export const selectNode = createAction('editor/node/SELECT')
+export const deleteNode = createAction('editor/node/DELETE')
 export const resetSelectedNode = createAction('editor/node/SELECT_RESET')
 export const addNode = createAction('editor/node/ADD')
 export const addRelation = createAction('editor/relation/ADD')
@@ -24,6 +25,8 @@ export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
 export const updateContextualDelete = createAction('editor/contextualDelete/UPDATE')
 export const resetContextualDelete = createAction('editor/contextualDelete/RESET')
+export const markNodeReadyToDelete = createAction('editor/contextualDelete/node/MARK_TO_DELETE')
+export const deleteTargetedNodes = createAction('editor/contextualDelete/node/DELETE_TARGETS')
 
 /*
  * Helper to normalize positions by stage position / offset.
@@ -153,6 +156,14 @@ export const reducer = {
     return { ...state, nodes: updatedNodes }
   },
 
+  [deleteNode]: (state, { payload }) => ({
+    ...state,
+    nodes: state.nodes.filter(({ name }) => name !== payload),
+    edges: state.edges.filter(
+      ({ nodes }) => nodes.every(name => name !== payload)
+    ),
+  }),
+
   [updateEdge]: (state, { payload: { node } }) => {
     const updatedEdges = state.edges
       .map(edge => {
@@ -208,7 +219,15 @@ export const reducer = {
       ...state,
       contextualDelete: { ...state.contextualDelete, ...payload }
     }
-  }
+  },
+
+  [markNodeReadyToDelete]: (state, { payload }) => ({
+    ...state,
+    contextualDelete: {
+      ...state.contextualDelete,
+      targets: state.contextualDelete.targets.concat(payload.name)
+    }
+  })
 }
 
 /*
@@ -308,6 +327,54 @@ export const middleware = {
 
     // Remove relation or sync.
     console.log(modelFields, 'REMOVE RELATIONS')
+
+    return result
+  },
+
+  [deleteTargetedNodes]: ({ getState, dispatch }) => next => action => {
+    // Delete targeted nodes to delete.
+    getState().contextualDelete.targets
+      .forEach(name => {
+        next(deleteNode(name))
+      })
+
+    // Reset contextual delete.
+    next(resetContextualDelete())
+
+    return next(action)
+  },
+
+  [markNodeReadyToDelete]: ({ getState, dispatch }) => next => action => {
+    const result = next(action)  
+    const { recursive = true, name: nodeName } = action.payload
+    if (!recursive) return result
+    
+    const state = getState()
+    
+    const nodeToDelete = state.nodes.find(({ name }) => name === nodeName)
+    // Nodes which are fields referencing
+    // to the node being deleted.
+    state.edges
+      .filter(({ nodes }) => nodes[1] === nodeName)
+      .map(({ nodes }) => nodes[0])
+      .forEach(name => dispatch(markNodeReadyToDelete({ name, recursive: false })))
+
+    // Nodes which are fields of the node being deleted.
+    state.nodes
+      .filter(({ name }) => nodeToDelete.fields.some(
+        ({ name: fieldName }) => fieldName === name
+      ))
+      // Remove relation nodes (field) that is also used by another model node,
+      // to avoid removing a field which is being used by other types/mode nodes.
+      .filter(({ name: nodeToBeMarked }) =>
+        state.nodes
+          .filter(({ name }) => name !== nodeName)
+          .every(({ fields = [] }) =>
+            fields.every(({ name }) => name !== nodeToBeMarked))
+      )
+      .forEach(
+        ({ name }) => dispatch(markNodeReadyToDelete({ name, recursive: false }))
+      )
 
     return result
   }

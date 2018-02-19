@@ -17,7 +17,10 @@ const initialStateComplex = {
         y: 605
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'applicationPlaces', type: '[ApplicationPlace]' },
+        { name: 'company', type: '[Company]' }
+      ],
       selected: false
     },
     {
@@ -27,7 +30,9 @@ const initialStateComplex = {
         y: 50
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'vaccines', type: '[Vaccine]' }
+      ],
       selected: false
     },
     {
@@ -57,7 +62,9 @@ const initialStateComplex = {
         y: 453
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'unity', type: 'Unity' }
+      ],
       selected: false
     },
     {
@@ -77,7 +84,10 @@ const initialStateComplex = {
         y: 204
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'unity', type: 'Unity' },
+        { name: 'shotPackages', type: '[ShotPackage]' }
+      ],
       selected: false
     },
     {
@@ -97,7 +107,9 @@ const initialStateComplex = {
         y: 531
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'vaccine', type: 'Vaccine' }
+      ],
       selected: false
     },
     {
@@ -117,7 +129,12 @@ const initialStateComplex = {
         y: 489
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'applicationPlace', type: 'ApplicationPlace' },
+        { name: 'vaccine', type: 'Vaccine' },
+        { name: 'shotOrder', type: 'ShotOrder' },
+        { name: 'cdaLot', type: 'CdaLot' },
+      ],
       selected: false
     },
     {
@@ -146,7 +163,9 @@ const initialStateComplex = {
         y: 268
       },
       type: 'model',
-      fields: [],
+      fields: [
+        { name: 'vaccine', type: 'Vaccine' }
+      ],
       selected: false
     },
     {
