@@ -492,4 +492,4 @@ const initialStateSimple = {
   stage: { pos: { x: -1, y: 0 } }
 }
 
-export default initialStateComplex;
+export default initialStateSimple;

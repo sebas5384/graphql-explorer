@@ -61,7 +61,7 @@ const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNo
 )
 
 const handleAddNode = ({ dispatch, stage }) => event => {
-  const name = prompt('Whats my name?')
+  const name = prompt("What's the name of this new Type?")
   const pos = normalizePosWithStage({ stage, pos: { x: 150, y: 150 } })
   name && dispatch(addNode({ name, pos, type: 'model' }))
 }
