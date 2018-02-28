@@ -132,8 +132,8 @@ const onNodeClick = ({ dispatch, stage, edges, selectedNode, connector, nodes })
 
     // Connection from: Model to Model node.
     if ([selectedNode, connectedToNode].every(({ type }) => type === 'model')) {
-      const name = prompt("Name of the field?")
-      const type = prompt("Type of the relation (hasMany, hasOne)?")
+      const name = prompt("What's the name of the Field?")
+      const type = prompt("Type of the relation?\n(hasMany, hasOne)")
  
       if (name && type) {
         dispatch(
