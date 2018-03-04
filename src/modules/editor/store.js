@@ -5,7 +5,7 @@ import * as R from 'ramda'
 
 import initialStateMock from './__mock__/initialState'
 
-import { middlePositions } from './lib/middlePositions'
+import { middlePositions, aroundPositions } from './lib/positions'
 
 /*
  * Actions.
@@ -282,6 +282,7 @@ export const middleware = {
     const { nodes, edges } = getState()
     const { name, nodeA, nodeB, type, isModelToRelation } = action.payload
     
+    // Translate type to schema lang type.
     const fieldType = ({ nodeB, type }) => {
       const node = isModelToRelation
         ? getModelFromRelation({ edges, nodeB })
@@ -307,10 +308,14 @@ export const middleware = {
       node => [nodeA, nodeB].some(name => node.name === name)
     )
 
+    const positions = selectedNodes.length === 1
+      ? aroundPositions(selectedNodes)
+      : middlePositions(selectedNodes)
+
     // Create node for field.
     dispatch(addNode({
       name, 
-      pos: middlePositions(selectedNodes),
+      pos: positions,
       type: 'relation',
       selected: false,
       cardinality: type,

@@ -46,7 +46,7 @@ const handleOnDoubleClick = ({ selectedNode, dispatch }) => ({ name }) => event 
 }
 
 const handleMouseOver = ({ name, selectedNode, connector: { isConnecting }, dispatch }) => event => {
-  if (isConnecting && selectedNode.name !== name) {
+  if (isConnecting) {
     dispatch(updateConnector({ connectedTo: name }))
   }
 }
