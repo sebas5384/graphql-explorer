@@ -13,7 +13,11 @@ const biggestPos = prop => R.pipe(
 )
 
 export const middlePositions = nodes => {
-  const positions = R.reduce((carry, item) => carry.concat(item.pos), [], nodes)
+  const positions = R.reduce(
+    (carry, item) => carry.concat(item.pos),
+    [],
+    nodes
+  )
 
   const yA = biggestPos("y")(positions);
   const yB = lowestPos("y")(positions);
@@ -26,3 +30,16 @@ export const middlePositions = nodes => {
 
   return { x, y }
 }
+
+const randomMargin = pos => {
+  const range = R.range(120, 130)
+  const margins = R.concat(R.map(R.negate, range), range)
+  return pos + margins[Math.floor(Math.random() * margins.length)]
+}
+
+export const aroundPositions = R.pipe(
+  R.head,
+  R.prop('pos'),
+  R.over(R.lensProp('y'), randomMargin),
+  R.over(R.lensProp('x'), randomMargin),
+)

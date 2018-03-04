@@ -1,4 +1,4 @@
-import { middlePositions } from '../middlePositions'
+import { middlePositions } from '../positions'
 
 it('should extract middle positions from x and y vectors', () => {
   const nodeA = {
