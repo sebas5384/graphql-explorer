@@ -21,6 +21,7 @@ export const addNode = createAction('editor/node/ADD')
 export const addRelation = createAction('editor/relation/ADD')
 export const addEdge = createAction('editor/edge/ADD')
 export const addField = createAction('editor/field/ADD')
+export const deleteField = createAction('editor/field/DELETE')
 export const updateConnector = createAction('editor/connector/UPDATE')
 export const resetConnector = createAction('editor/connector/RESET')
 export const updateContextualDelete = createAction('editor/contextualDelete/UPDATE')
@@ -131,6 +132,21 @@ export const reducer = {
       })
       : node
     )
+
+    return { ...state, nodes: updatedNodes }
+  },
+
+  [deleteField]: (state, { payload: fieldName }) => {
+    const updatedNodes = state.nodes
+      .map(node => {
+        if (node.type !== 'model') return node
+        return ({
+          ...node,
+          fields: node.fields.filter(
+            field => field.name !== fieldName
+          )
+        })
+      })
 
     return { ...state, nodes: updatedNodes }
   },
@@ -332,16 +348,21 @@ export const middleware = {
   },
 
   [deleteTargetedNodes]: ({ getState, dispatch }) => next => action => {
-    // Delete targeted nodes to delete.
+    const result = next(action)
+
     getState().contextualDelete.targets
-      .forEach(name => {
+    .forEach(name => {
+        // Delete targeted nodes.
         next(deleteNode(name))
+
+        // Delete fields inside model nodes.
+        next(deleteField(name))
       })
 
     // Reset contextual delete.
     next(resetContextualDelete())
 
-    return next(action)
+    return result
   },
 
   [markNodeReadyToDelete]: ({ getState, dispatch }) => next => action => {
