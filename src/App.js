@@ -12,6 +12,7 @@ import {
   addNode, resetConnector, resetSelectedNode,
   normalizePosWithStage, resetContextualDelete, deleteTargetedNodes
 } from './modules/editor/store'
+import { normalizeNodeName } from './modules/editor/lib/helpers'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -62,8 +63,10 @@ const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNo
 
 const handleAddNode = ({ dispatch, stage }) => event => {
   const name = prompt("What's the name of this new Type?")
+  if (name.length < 1) return
   const pos = normalizePosWithStage({ stage, pos: { x: 150, y: 150 } })
-  name && dispatch(addNode({ name, pos, type: 'model' }))
+  const newNode = normalizeNodeName({ name, pos, type: 'model' })
+  dispatch(addNode(newNode))
 }
 
 const handleDeleteNode = ({ dispatch, stage }) => event => {
