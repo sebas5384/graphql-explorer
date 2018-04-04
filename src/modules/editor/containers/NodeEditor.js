@@ -61,7 +61,7 @@ const FieldNode = styled.p`
 
 const FieldName = styled.span`
   color: #ec63c5;
-  font-weight: 600;
+  font-weight: 500;
 `
 
 const renderNode = props => {

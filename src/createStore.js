@@ -2,6 +2,7 @@ import boot from 'redux-boot'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 import editorModule from './modules/editor/store'
+import sidebarModule from './modules/sidebar/store'
 
 // DevTools
 const devToolsModule = {
@@ -10,6 +11,7 @@ const devToolsModule = {
 
 const modules = [
   editorModule,
+  sidebarModule,
   devToolsModule,
 ]
 
