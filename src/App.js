@@ -6,6 +6,7 @@ import ReactCursorPosition from 'react-cursor-position'
 import { withEvents } from 'react-compose-events'
 import isHotKey from 'is-hotkey'
 
+import SidebarContainer from './modules/sidebar/containers/SidebarContainer'
 import Editor from './modules/editor/containers/Editor'
 import NodeEditor from './modules/editor/containers/NodeEditor'
 import {
@@ -55,6 +56,7 @@ const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNo
     <PainelNavigator>
       <NodeEditor />
     </PainelNavigator>
+    <SidebarContainer />
     <ReactCursorPosition mapChildProps={ ({ position }) => ({ cursorPosition: position })}>
       <Editor />
     </ReactCursorPosition>
@@ -63,7 +65,7 @@ const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNo
 
 const handleAddNode = ({ dispatch, stage }) => event => {
   const name = prompt("What's the name of this new Type?")
-  if (name.length < 1) return
+  if (!name || name.length < 1) return
   const pos = normalizePosWithStage({ stage, pos: { x: 150, y: 150 } })
   const newNode = normalizeNodeName({ name, pos, type: 'model' })
   dispatch(addNode(newNode))

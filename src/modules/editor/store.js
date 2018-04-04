@@ -410,12 +410,12 @@ const enhancer = createStore => (reducer, initialState, enhancer) => {
   const store = createStore(reducer, initialState, enhancer)
 
   // Updates local storage.
-  // store.subscribe(() => {
-  //   const state = store.getState()
+  store.subscribe(() => {
+    const state = store.getState()
 
-  //   lscache.set('nodes', state.nodes)
-  //   lscache.set('edges', state.edges)
-  // })
+    lscache.set('nodes', state.nodes)
+    lscache.set('edges', state.edges)
+  })
 
   return store
 }
