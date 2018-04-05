@@ -1,3 +1,5 @@
+import * as R from 'ramda'
+
 export const deserializeFields = fields => ({
   document: {
     nodes: fields.map(({ name, type }) => ({
@@ -30,11 +32,12 @@ export const serializeFields = ({ document: { nodes } }) => nodes
     .reduce((carry, current) => {
       if (current.text.length < 1) return
 
-      const clean = str => str.replace(/[^a-zA-Z_[\]!]/g, '')
+      const cleanType = R.pipe(R.replace(/[^a-zA-Z_@() ":[\]!]/, ''), R.trim)
+      const cleanName = R.pipe(R.replace(/[^a-zA-Z_]/g, ''), R.trim)
 
       return current.marks.length
-        ? ({ ...carry, type: clean(current.text) })
-        : ({ ...carry, name: clean(current.text) })
+        ? ({ ...carry, type: cleanType(current.text) })
+        : ({ ...carry, name: cleanName(current.text) })
     }, {})
   )
   // Remove invalid fields.

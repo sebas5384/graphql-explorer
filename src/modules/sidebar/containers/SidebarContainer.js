@@ -11,7 +11,7 @@ const Wrapper = styled.section`
   padding: 0.9em 1.3em;
   height: 100%;
   box-sizing: border-box;
-  transition: opacity 0.3s, padding-right 0.3s, padding-left 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+  transition: opacity 0.3s, padding-right 0.3s, padding-left 0.3s ease-out;
   ${({ isOpen }) => !isOpen && `
     width: 0;
     padding-right: 0;

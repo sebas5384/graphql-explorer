@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react'
-import Sidebar from '../components/Sidebar'
 import Card from '../components/Card'
 import styled from 'styled-components'
 import { compose } from 'recompose'
@@ -11,7 +10,7 @@ const Code = styled(Card)`
   cursor: text;
 `
 
-const FieldNode = styled.p`
+const FieldNode = styled.span`
   line-height: 1.8em;
   margin: 0;
   font-size: 1em;
@@ -25,13 +24,21 @@ const FieldName = styled.span`
   font-weight: 500;
 `
 
+const TypeName = styled.span`
+  font-style: italic;
+`
+
 const CodeContainer = ({ nodes }) => (
   <Code>
-    { nodes.map(node => (
-      <Fragment>
-        <FieldNode>{ 'type ' }<FieldName>{ node.name }</FieldName>{ ' {' }</FieldNode>
-        { node.fields.map(({ name, type }) => (
-          <FieldNode>&nbsp;&nbsp;{ name + ':' }&nbsp;<FieldName>{ type }</FieldName></FieldNode>
+    { nodes.map((node, key) => (
+      <Fragment key={ node.name + key }>
+        <FieldNode>
+          <TypeName>{ 'type ' }</TypeName>
+          <FieldName>{ node.name }</FieldName>
+          { ' {' }
+        </FieldNode>
+        { node.fields.map(({ name, type }, key) => (
+          <FieldNode key={ node.name + key }>&nbsp;&nbsp;{ name + ':' }&nbsp;<FieldName>{ type }</FieldName></FieldNode>
         )) }
         <FieldNode>{ '}' }</FieldNode>
         <br />
