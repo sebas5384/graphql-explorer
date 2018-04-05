@@ -1,6 +1,6 @@
 import { BOOT } from 'redux-boot'
 import { createAction } from 'redux-actions'
-import { over, lensPath, complement } from 'ramda'
+import { over, lensPath } from 'ramda'
 
 export const toggleSidebar = createAction('sidebar/TOGGLE')
 export const resetSidebar = createAction('sidebar/RESET')

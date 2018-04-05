@@ -3,7 +3,8 @@ import styled from 'styled-components'
 const SideBar = styled.section`
   display: block;
   width: auto;
-  height: 90%;
+  height: 83%;
+  border-radius: 0 4px 0;
   position: fixed;
   right: 0;
   top: 0;
