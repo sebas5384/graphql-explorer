@@ -3,6 +3,7 @@ import { createAction } from 'redux-actions'
 import { over, lensPath, complement } from 'ramda'
 
 export const toggleSidebar = createAction('sidebar/TOGGLE')
+export const resetSidebar = createAction('sidebar/RESET')
 
 const getInitialState = state => ({
   ...state,
@@ -13,6 +14,7 @@ const getInitialState = state => ({
 
 const reducer = {
   [BOOT]: (state, action) => getInitialState(state),
+  [resetSidebar]: (state, action) => getInitialState(state),
   [toggleSidebar]: (state, action) => over(
     lensPath(['sidebar', 'isOpen']),
     value => !value
