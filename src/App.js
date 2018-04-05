@@ -14,6 +14,7 @@ import {
   normalizePosWithStage, resetContextualDelete, deleteTargetedNodes
 } from './modules/editor/store'
 import { normalizeNodeName } from './modules/editor/lib/helpers'
+import { resetSidebar } from './modules/sidebar/store'
 
 const PainelNavigator = styled.section`
   position: fixed;
@@ -91,6 +92,7 @@ export default compose(
         dispatch(resetConnector())
         dispatch(resetSelectedNode())
         dispatch(resetContextualDelete())
+        dispatch(resetSidebar())
       }
     }
   }))
