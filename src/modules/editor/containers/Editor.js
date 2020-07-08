@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose, withHandlers } from 'recompose'
-import { Layer, Stage } from 'react-konva'
+import { Layer } from 'react-konva'
 import windowDimensions from 'react-window-dimensions'
 
+import Stage from '../../core/containers/StageWithRedux'
 import Node from '../components/Node'
 import Edge from '../components/Edge'
 import ContextualDelete from '../containers/ContextualDelete'

@@ -8,7 +8,8 @@ import isHotKey from 'is-hotkey'
 
 import SidebarContainer from './modules/sidebar/containers/SidebarContainer'
 import Editor from './modules/editor/containers/Editor'
-import NodeEditor from './modules/editor/containers/NodeEditor'
+// @TODO Upgrade react-slate
+// import NodeEditor from './modules/editor/containers/NodeEditor'
 import {
   addNode, resetConnector, resetSelectedNode,
   normalizePosWithStage, resetContextualDelete, deleteTargetedNodes
@@ -55,7 +56,7 @@ const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNo
     { showAdd && <NodeAdd onClick={ handleAddNode }>ADD NODE</NodeAdd> }
     { showDelete && <NodeDelete onClick={ handleDeleteNode }>DELETE NODE</NodeDelete> }
     <PainelNavigator>
-      <NodeEditor />
+      {/* <NodeEditor /> */}
     </PainelNavigator>
     <SidebarContainer />
     <ReactCursorPosition mapChildProps={ ({ position }) => ({ cursorPosition: position })}>
