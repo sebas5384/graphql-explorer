@@ -50,8 +50,23 @@ const NodeDelete = styled.a`
   z-index: 1;
 `
 
-const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNode }) => (
+const DownloadImage = styled.a`
+  background: url('/add-node.png') no-repeat;
+  width: 115px;
+  height: 116px;
+  display: block;
+  cursor: pointer;
+  text-indent: -999px;
+  overflow: hidden;
+  position: fixed;
+  bottom: 10px;
+  right: 150px;
+  z-index: 1;
+`
+
+const App = ({ handleAddNode, handleDownloadImage, handleAddEdge, showAdd, showDelete, handleDeleteNode }) => (
   <div className='App'>
+    <DownloadImage onClick={ handleDownloadImage }>DOWNLOAD IMAGE</DownloadImage>
     { showAdd && <NodeAdd onClick={ handleAddNode }>ADD NODE</NodeAdd> }
     { showDelete && <NodeDelete onClick={ handleDeleteNode }>DELETE NODE</NodeDelete> }
     <PainelNavigator>
@@ -76,6 +91,17 @@ const handleDeleteNode = ({ dispatch, stage }) => event => {
   dispatch(deleteTargetedNodes())
 }
 
+const handleDownloadImage = ({ dispatch, stage }) => event => {
+  // dispatch(downloadImage(stage))
+  const dataURL = stage.toDataURL({ pixelRatio: 3 })
+  const link = document.createElement('a')
+  link.download = 'stage.png'
+  link.href = dataURL
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
 const mapStateToProps = ({ nodes, stage, contextualDelete }) => ({
   nodes,
   stage,
@@ -85,7 +111,7 @@ const mapStateToProps = ({ nodes, stage, contextualDelete }) => ({
 
 export default compose(
   connect(mapStateToProps),
-  withHandlers({ handleAddNode, handleDeleteNode }),
+  withHandlers({ handleAddNode, handleDeleteNode, handleDownloadImage }),
   withEvents(window, ({ dispatch }) => ({
     keydown: event => {
       if (isHotKey('esc')(event)) {

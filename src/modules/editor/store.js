@@ -28,6 +28,7 @@ export const updateContextualDelete = createAction('editor/contextualDelete/UPDA
 export const resetContextualDelete = createAction('editor/contextualDelete/RESET')
 export const markNodeReadyToDelete = createAction('editor/contextualDelete/node/MARK_TO_DELETE')
 export const deleteTargetedNodes = createAction('editor/contextualDelete/node/DELETE_TARGETS')
+// export const downloadImage = createAction('editor/stage/DOWNLOAD_IMAGE')
 
 /*
  * Helper to normalize positions by stage position / offset.
@@ -120,10 +121,10 @@ export const reducer = {
   [addField]: (state, { payload: { nodeName, name, type } }) => {
     // Find the source Node.
     const sourceNode = state.nodes.find(node => node.name === nodeName)
-    
+
     // Avoid duplicate.
     if (sourceNode.fields.find(field => field.name === name)) return state
-    
+
     // Add new field
     const updatedNodes = state.nodes.map(node => node.name === nodeName
       ? ({
@@ -281,7 +282,7 @@ export const middleware = {
     const result = next(action)
     const { nodes, edges } = getState()
     const { name, nodeA, nodeB, type, isModelToRelation } = action.payload
-    
+
     // Translate type to schema lang type.
     const fieldType = ({ nodeB, type }) => {
       const node = isModelToRelation
@@ -314,19 +315,19 @@ export const middleware = {
 
     // Create node for field.
     dispatch(addNode({
-      name, 
+      name,
       pos: positions,
       type: 'relation',
       selected: false,
       cardinality: type,
     }))
-    
+
     // Create edge from nodeA to fieldNode.
     dispatch(addEdge({ nodeA, nodeB: name, type }))
-    
-    // Create edge from fieldNode to nodeB. 
+
+    // Create edge from fieldNode to nodeB.
     dispatch(addEdge({ nodeA: name, nodeB, type }))
-    
+
     return result
   },
 
@@ -371,12 +372,12 @@ export const middleware = {
   },
 
   [markNodeReadyToDelete]: ({ getState, dispatch }) => next => action => {
-    const result = next(action)  
+    const result = next(action)
     const { recursive = true, name: nodeName } = action.payload
     if (!recursive) return result
-    
+
     const state = getState()
-    
+
     const nodeToDelete = state.nodes.find(({ name }) => name === nodeName)
     // Nodes which are fields referencing
     // to the node being deleted.
@@ -403,7 +404,25 @@ export const middleware = {
       )
 
     return result
-  }
+  },
+
+  // [downloadImage]: ({ getState, dispatch }) => next => action => {
+  //   const result = next(action)
+  //   alert('sss')
+
+  //   console.log('downloading...')
+
+  //   const stage = action.payload
+  //   const dataURL = stage.toDataURL({ pixelRatio: 3 })
+  //   const link = document.createElement('a')
+  //   link.download = 'stage.png'
+  //   link.href = dataURL
+  //   document.body.appendChild(link)
+  //   link.click()
+  //   document.body.removeChild(link)
+
+  //   return result
+  // },
 }
 
 const enhancer = createStore => (reducer, initialState, enhancer) => {
