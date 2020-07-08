@@ -4,35 +4,35 @@
   "private": true,
   "dependencies": {
     "babel-runtime": "^6.23.0",
-    "immutable": "^3.8.2",
+    "immutable": "^4.0.0-rc.12",
     "is-hotkey": "^0.1.1",
-    "konva": "^1.5.0",
+    "konva": "^7.0.0",
     "lscache": "^1.1.0",
-    "ramda": "^0.25.0",
+    "ramda": "^0.27.0",
     "react": "^16.1.1",
     "react-compose-events": "^0.1.0",
-    "react-cursor-position": "^2.2.2",
+    "react-cursor-position": "^3.0.3",
     "react-dom": "^16.0.0",
-    "react-konva": "^1.6.2",
+    "react-konva": "^16.13.0-3",
     "react-motion": "^0.5.2",
     "react-motion-loop": "^2.0.0",
-    "react-redux": "^5.0.3",
-    "react-router": "^4.1.1",
-    "react-router-dom": "^4.1.1",
+    "react-redux": "^7.2.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
     "react-window-dimensions": "^1.0.0",
-    "recompose": "^0.23.0",
-    "redux": "^3.6.0",
-    "redux-actions": "2.2.0",
+    "recompose": "^0.30.0",
+    "redux": "^4.0.5",
+    "redux-actions": "2.6.5",
     "redux-boot": "^1.1.2",
-    "redux-promise": "^0.5.3",
-    "slate": "^0.31.3",
-    "slate-react": "^0.10.17",
-    "slate-soft-break": "^0.6.0",
+    "redux-promise": "^0.6.0",
+    "slate": "^0.58.3",
+    "slate-react": "^0.58.3",
+    "slate-soft-break": "^0.9.0",
     "strman": "^2.0.0",
-    "styled-components": "^2.2.3"
+    "styled-components": "^5.1.1"
   },
   "devDependencies": {
-    "react-scripts": "1.0.17",
+    "react-scripts": "3.4.1",
     "redux-devtools-extension": "^2.13.0"
   },
   "scripts": {
@@ -40,5 +40,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
