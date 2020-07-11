@@ -7,8 +7,6 @@ import { useMouse, useKey } from 'react-use';
 
 import SidebarContainer from './modules/sidebar/containers/SidebarContainer'
 import Editor from './modules/editor/containers/Editor'
-// @TODO Upgrade react-slate
-// import NodeEditor from './modules/editor/containers/NodeEditor'
 import {
   addNode, resetConnector, resetSelectedNode,
   normalizePosWithStage, resetContextualDelete, deleteTargetedNodes
@@ -16,12 +14,6 @@ import {
 import { normalizeNodeName } from './modules/editor/lib/helpers'
 import { resetSidebar } from './modules/sidebar/store'
 
-const PainelNavigator = styled.section`
-  position: fixed;
-  top: 2.2em;
-  left: 2.3em;
-  z-index: 1;
-`
 const NodeAdd = styled.a`
   background: url('/add-node.png') no-repeat;
   width: 115px;
@@ -70,9 +62,6 @@ const App = ({ handleAddNode, showAdd, showDelete, handleDeleteNode, dispatch })
     <div className='App'>
       { showAdd && <NodeAdd onClick={ handleAddNode }>ADD NODE</NodeAdd> }
       { showDelete && <NodeDelete onClick={ handleDeleteNode }>DELETE NODE</NodeDelete> }
-      <PainelNavigator>
-        {/* <NodeEditor /> */}
-      </PainelNavigator>
       <SidebarContainer />
       <div ref={ref}>
         <Editor cursorPosition={cursorPosition} />
