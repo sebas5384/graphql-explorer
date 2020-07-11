@@ -2,9 +2,8 @@ import React from 'react'
 import { compose, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import ReactCursorPosition from 'react-cursor-position'
-import { withEvents } from 'react-compose-events'
 import isHotKey from 'is-hotkey'
+import { useMouse, useKey } from 'react-use';
 
 import SidebarContainer from './modules/sidebar/containers/SidebarContainer'
 import Editor from './modules/editor/containers/Editor'
@@ -51,19 +50,36 @@ const NodeDelete = styled.a`
   z-index: 1;
 `
 
-const App = ({ handleAddNode, handleAddEdge, showAdd, showDelete, handleDeleteNode }) => (
-  <div className='App'>
-    { showAdd && <NodeAdd onClick={ handleAddNode }>ADD NODE</NodeAdd> }
-    { showDelete && <NodeDelete onClick={ handleDeleteNode }>DELETE NODE</NodeDelete> }
-    <PainelNavigator>
-      {/* <NodeEditor /> */}
-    </PainelNavigator>
-    <SidebarContainer />
-    <ReactCursorPosition mapChildProps={ ({ position }) => ({ cursorPosition: position })}>
-      <Editor />
-    </ReactCursorPosition>
-  </div>
-)
+function useResetKey(dispatch) {
+  useKey(isHotKey('esc'), () => {
+    dispatch(resetConnector())
+    dispatch(resetSelectedNode())
+    dispatch(resetContextualDelete())
+    dispatch(resetSidebar())
+  })
+}
+
+const App = ({ handleAddNode, showAdd, showDelete, handleDeleteNode, dispatch }) => {
+  let ref = React.useRef(null)
+  const {elX, elY} = useMouse(ref)
+  const cursorPosition = { x: elX, y: elY }
+
+  useResetKey(dispatch)
+
+  return (
+    <div className='App'>
+      { showAdd && <NodeAdd onClick={ handleAddNode }>ADD NODE</NodeAdd> }
+      { showDelete && <NodeDelete onClick={ handleDeleteNode }>DELETE NODE</NodeDelete> }
+      <PainelNavigator>
+        {/* <NodeEditor /> */}
+      </PainelNavigator>
+      <SidebarContainer />
+      <div ref={ref}>
+        <Editor cursorPosition={cursorPosition} />
+      </div>
+    </div>
+  )
+}
 
 const handleAddNode = ({ dispatch, stage }) => event => {
   const name = prompt("What's the name of this new Type?")
@@ -87,14 +103,4 @@ const mapStateToProps = ({ nodes, stage, contextualDelete }) => ({
 export default compose(
   connect(mapStateToProps),
   withHandlers({ handleAddNode, handleDeleteNode }),
-  withEvents(window, ({ dispatch }) => ({
-    keydown: event => {
-      if (isHotKey('esc')(event)) {
-        dispatch(resetConnector())
-        dispatch(resetSelectedNode())
-        dispatch(resetContextualDelete())
-        dispatch(resetSidebar())
-      }
-    }
-  }))
 )(App)
