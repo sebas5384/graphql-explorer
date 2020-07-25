@@ -5,16 +5,19 @@ import { compose } from 'recompose'
 import { connect } from 'react-redux'
 import { sort, ascend, prop } from 'ramda'
 
+import CodeEditor from '../modules/codemirror/containers/CodeEditor'
+
 const Code = styled(Card)`
   padding: 1em 1em 20em;
-  cursor: text;
+  /* cursor: text; */
 `
 
 const FieldNode = styled.span`
   line-height: 1.8em;
   margin: 0;
   font-size: 1em;
-  font-family: Fira Code, "Consolas", "Inconsolata", "Droid Sans Mono", "Monaco", monospace;
+  font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco',
+    monospace;
   color: #ddd;
   font-weight: 100;
 `
@@ -30,29 +33,14 @@ const TypeName = styled.span`
 
 const CodeContainer = ({ nodes }) => (
   <Code>
-    { nodes.map((node, key) => (
-      <Fragment key={ node.name + key }>
-        <FieldNode>
-          <TypeName>{ 'type ' }</TypeName>
-          <FieldName>{ node.name }</FieldName>
-          { ' {' }
-        </FieldNode>
-        { node.fields.map(({ name, type }, key) => (
-          <FieldNode key={ node.name + key }>&nbsp;&nbsp;{ name + ':' }&nbsp;<FieldName>{ type }</FieldName></FieldNode>
-        )) }
-        <FieldNode>{ '}' }</FieldNode>
-        <br />
-      </Fragment>
-    )) }
+    <CodeEditor />
   </Code>
 )
 
 const mapStateToProps = ({ nodes, sidebar }) => {
   const modelNodes = nodes.filter(({ type }) => type === 'model')
   const sortedNodes = sort(ascend(prop('name')), modelNodes)
-  return { nodes: sortedNodes, sidebar };
+  return { nodes: sortedNodes, sidebar }
 }
 
-export default compose(
-  connect(mapStateToProps)
-)(CodeContainer)
+export default compose(connect(mapStateToProps))(CodeContainer)

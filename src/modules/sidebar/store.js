@@ -5,20 +5,18 @@ import { over, lensPath } from 'ramda'
 export const toggleSidebar = createAction('sidebar/TOGGLE')
 export const resetSidebar = createAction('sidebar/RESET')
 
-const getInitialState = state => ({
+const getInitialState = (state) => ({
   ...state,
   sidebar: {
-    isOpen: false
-  }
+    isOpen: true,
+  },
 })
 
 const reducer = {
   [BOOT]: (state, action) => getInitialState(state),
   [resetSidebar]: (state, action) => getInitialState(state),
-  [toggleSidebar]: (state, action) => over(
-    lensPath(['sidebar', 'isOpen']),
-    value => !value
-  )(state)
+  [toggleSidebar]: (state, action) =>
+    over(lensPath(['sidebar', 'isOpen']), (value) => !value)(state),
 }
 
 export default { reducer }
