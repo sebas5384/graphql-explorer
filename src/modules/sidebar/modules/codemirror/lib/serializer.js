@@ -1,11 +1,7 @@
-import { objectValues, RuleKinds } from 'graphql-language-service'
-import {
-  isInputObjectType,
-  isIntrospectionType,
-  isObjectType,
-  isListType,
-  valueFromASTUntyped,
-} from 'graphql'
+// @TODO: Consider moving this lib to the editor module.
+
+import { RuleKinds } from 'graphql-language-service'
+import { isInputObjectType, isIntrospectionType, isObjectType } from 'graphql'
 
 const isNotIntrospectionType = (f) => !isIntrospectionType(f)
 const isNotInputType = (field) => !isInputObjectType(field)
@@ -23,7 +19,7 @@ const getValueFromAstField = (ast) => {
   return getValueFromAstField(ast.type)
 }
 
-const isKindFromAst = (ast, predicate) => {
+const matchFromAst = (ast, predicate) => {
   if (predicate(ast)) {
     return true
   }
@@ -32,7 +28,7 @@ const isKindFromAst = (ast, predicate) => {
     return false
   }
 
-  return isKindFromAst(ast.type, predicate)
+  return matchFromAst(ast.type, predicate)
 }
 
 export function serializeSchemaToEditor(schema) {
@@ -70,7 +66,7 @@ export function serializeSchemaToEditor(schema) {
     }, [])
     // only fields which relates to potential nodes.
     .filter(([name, field]) =>
-      isKindFromAst(field.astNode, (ast) =>
+      matchFromAst(field.astNode, (ast) =>
         potentialNodes.some(
           ([name]) => ast?.name?.value && name === ast?.name?.value
         )
@@ -78,7 +74,7 @@ export function serializeSchemaToEditor(schema) {
     )
 
   const relationNodes = relationFields.map(([name, field]) => {
-    const isHasMany = isKindFromAst(
+    const isHasMany = matchFromAst(
       field.astNode,
       (ast) => ast?.kind === RuleKinds.LIST_TYPE
     )
@@ -92,7 +88,7 @@ export function serializeSchemaToEditor(schema) {
 
   const edges = relationFields
     .map(([name, field, parentType]) => {
-      const type = isKindFromAst(
+      const type = matchFromAst(
         field.astNode,
         (ast) => ast?.kind === RuleKinds.LIST_TYPE
       )

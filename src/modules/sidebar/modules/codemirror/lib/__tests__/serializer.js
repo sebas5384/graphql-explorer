@@ -21,47 +21,6 @@ schema {
 }
 `
 
-const nodes_MOCK = [
-  {
-    fields: [
-      {
-        name: 'id',
-        type: 'ID!',
-      },
-      {
-        name: 'comments',
-        type: '[Comment]',
-      },
-    ],
-    name: 'Post',
-    type: 'model',
-  },
-  {
-    fields: [
-      {
-        name: 'id',
-        type: 'ID!',
-      },
-      {
-        name: 'post',
-        type: '[Post]',
-      },
-    ],
-    name: 'Comment',
-    type: 'model',
-  },
-  {
-    name: 'comments',
-    type: 'relation',
-    cardinality: 'hasMany',
-  },
-  {
-    name: 'post',
-    type: 'relation',
-    cardinality: 'hasMany',
-  },
-]
-
 const compiledSchema = buildSchema(BASIC_SCHEMA)
 
 describe('Editor Serializer', () => {
