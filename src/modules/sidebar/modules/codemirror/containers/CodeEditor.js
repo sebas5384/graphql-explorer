@@ -1,14 +1,15 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react'
-
+import { useSelector, useDispatch } from 'react-redux'
 import { UnControlled as CodeMirror } from 'react-codemirror2'
-import { useLocalStorage } from 'react-use'
-
 import { buildSchema } from 'graphql'
+
 import onHasCompletion from '../lib/onHasCompletion'
+import { updateCodeEditorValue } from '../store'
 
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
 import 'codemirror/theme/dracula.css'
+import { serializeSchemaToEditor } from '../lib/serializer'
 
 require('codemirror/addon/hint/show-hint')
 require('codemirror/addon/comment/comment')
@@ -45,33 +46,21 @@ const setupEditor = (cmRef) => (editor) => {
   editor.on('hasCompletion', onHasCompletion)
 }
 
-const TESTE = `interface Node {
-  id: ID!
-}
-
-type Product implements Node {
-  id: ID!
-  name: String!
-}
-
-type RootQuery {
-  product(id: ID!): Product
-}
-
-schema {
-  query: RootQuery
-}
-`
-
 function CodeEditor() {
   let cmRef = React.useRef(null)
 
-  // @TODO use serialize and deserialize to return schema from localStorage
-  const [savedSchemaDsl, setSavedSchemaDsl] = useState(TESTE)
+  const savedSchemaDsl = useSelector((state) => state.sidebarCodeEditor.value)
+  const dispatch = useDispatch()
+  const setSavedSchemaDsl = useCallback(
+    (value) => dispatch(updateCodeEditorValue(value)),
+    [dispatch]
+  )
 
   const compiledSchema = useMemo(() => {
     try {
-      return buildSchema(savedSchemaDsl)
+      const schema = buildSchema(savedSchemaDsl)
+      console.log(serializeSchemaToEditor(schema))
+      return schema
     } catch (error) {}
   }, [savedSchemaDsl])
 

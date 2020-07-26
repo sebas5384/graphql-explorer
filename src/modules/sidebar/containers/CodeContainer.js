@@ -8,27 +8,8 @@ import { sort, ascend, prop } from 'ramda'
 import CodeEditor from '../modules/codemirror/containers/CodeEditor'
 
 const Code = styled(Card)`
-  padding: 1em 1em 20em;
+  /* padding: 1em 1em 20em; */
   /* cursor: text; */
-`
-
-const FieldNode = styled.span`
-  line-height: 1.8em;
-  margin: 0;
-  font-size: 1em;
-  font-family: Fira Code, 'Consolas', 'Inconsolata', 'Droid Sans Mono', 'Monaco',
-    monospace;
-  color: #ddd;
-  font-weight: 100;
-`
-
-const FieldName = styled.span`
-  color: #ec63c5;
-  font-weight: 500;
-`
-
-const TypeName = styled.span`
-  font-style: italic;
 `
 
 const CodeContainer = ({ nodes }) => (
