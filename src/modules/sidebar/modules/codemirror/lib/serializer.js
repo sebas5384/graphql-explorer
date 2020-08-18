@@ -2,6 +2,7 @@
 
 import { RuleKinds } from 'graphql-language-service'
 import { isInputObjectType, isIntrospectionType, isObjectType } from 'graphql'
+import { pipe, eqProps } from 'ramda'
 
 const isNotIntrospectionType = (f) => !isIntrospectionType(f)
 const isNotInputType = (field) => !isInputObjectType(field)
@@ -111,4 +112,14 @@ export function serializeSchemaToEditor(schema) {
     .flat()
 
   return { nodes: modelNodes.concat(relationNodes), edges: edges }
+}
+
+export function mergeSerializedToEditorState(serializedSchema, editorState) {
+  const currentNodes = editorState.nodes || []
+  const nodes = serializedSchema.nodes.map((node) => {
+    const currentNode = currentNodes.find(eqProps('name', node))
+    return { ...currentNode, ...node }
+  })
+
+  return { ...editorState, nodes }
 }

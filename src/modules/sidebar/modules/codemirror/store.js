@@ -1,6 +1,11 @@
 import { createAction } from 'redux-actions'
 import { BOOT } from 'redux-boot'
 import lscache from 'lscache'
+import { buildSchema } from 'graphql'
+import {
+  serializeSchemaToEditor,
+  mergeSerializedToEditorState,
+} from './lib/serializer'
 
 export const updateCodeEditorValue = createAction(
   'sidebard/code-editor/UPDATE_VALUE'
@@ -35,7 +40,14 @@ const getInitialState = (state) => ({
 const reducer = {
   [BOOT]: getInitialState,
   [updateCodeEditorValue]: (state, action) => {
-    return { ...state, sidebarCodeEditor: { value: action.payload } }
+    const schema = buildSchema(action.payload)
+    const serializedSchema = serializeSchemaToEditor(schema)
+    const newEditorState = mergeSerializedToEditorState(serializedSchema, state)
+    return {
+      ...state,
+      ...newEditorState,
+      sidebarCodeEditor: { value: action.payload },
+    }
   },
 }
 

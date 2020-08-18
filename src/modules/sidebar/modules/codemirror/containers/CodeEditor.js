@@ -9,7 +9,6 @@ import { updateCodeEditorValue } from '../store'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/addon/hint/show-hint.css'
 import 'codemirror/theme/dracula.css'
-import { serializeSchemaToEditor } from '../lib/serializer'
 
 require('codemirror/addon/hint/show-hint')
 require('codemirror/addon/comment/comment')
@@ -58,9 +57,7 @@ function CodeEditor() {
 
   const compiledSchema = useMemo(() => {
     try {
-      const schema = buildSchema(savedSchemaDsl)
-      console.log(serializeSchemaToEditor(schema))
-      return schema
+      return buildSchema(savedSchemaDsl)
     } catch (error) {}
   }, [savedSchemaDsl])
 

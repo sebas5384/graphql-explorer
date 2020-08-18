@@ -1,5 +1,8 @@
 import { buildSchema } from 'graphql'
-import { serializeSchemaToEditor } from '../serializer'
+import {
+  serializeSchemaToEditor,
+  mergeSerializedToEditorState,
+} from '../serializer'
 
 const BASIC_SCHEMA = `
 type Post {
@@ -104,8 +107,7 @@ describe('Editor Serializer', () => {
     ]
 
     const result = serializeSchemaToEditor(compiledSchema)
-
-    expect(result.nodes).toEqual(expect.arrayContaining(nodes))
+    expect(result.nodes).toEqual(nodes)
   })
 
   it('should extract edges for nodes from compiled schema', () => {
@@ -129,7 +131,135 @@ describe('Editor Serializer', () => {
     ]
 
     const result = serializeSchemaToEditor(compiledSchema)
-
     expect(result.edges).toEqual(expect.arrayContaining(edges))
+  })
+
+  it('should merge nodes positions from state with serialized schema', () => {
+    const nodesState = [
+      {
+        fields: [
+          {
+            name: 'comments',
+            type: '[Comment!]!',
+          },
+        ],
+        name: 'Post',
+        type: 'model',
+        selected: false,
+        pos: {
+          x: 426,
+          y: 605,
+        },
+      },
+      {
+        fields: [
+          {
+            name: 'id',
+            type: 'ID!',
+          },
+          {
+            name: 'post',
+            type: 'Post!',
+          },
+        ],
+        name: 'Comment',
+        type: 'model',
+        selected: false,
+        pos: {
+          x: 332,
+          y: 444,
+        },
+      },
+      {
+        cardinality: 'hasMany',
+        name: 'comments',
+        type: 'relation',
+        pos: {
+          x: 554,
+          y: 444,
+        },
+      },
+      {
+        cardinality: 'hasOne',
+        name: 'post',
+        type: 'relation',
+        pos: {
+          x: 339,
+          y: 222,
+        },
+      },
+    ]
+
+    const expectedNodesState = [
+      {
+        fields: [
+          {
+            name: 'id',
+            type: 'ID!',
+          },
+          {
+            name: 'comments',
+            type: '[Comment!]!',
+          },
+        ],
+        name: 'Post',
+        type: 'model',
+        selected: false,
+        pos: {
+          x: 426,
+          y: 605,
+        },
+      },
+      {
+        fields: [
+          {
+            name: 'id',
+            type: 'ID!',
+          },
+          {
+            name: 'post',
+            type: 'Post!',
+          },
+        ],
+        name: 'Comment',
+        type: 'model',
+        selected: false,
+        pos: {
+          x: 332,
+          y: 444,
+        },
+      },
+      {
+        cardinality: 'hasMany',
+        name: 'comments',
+        type: 'relation',
+        pos: {
+          x: 554,
+          y: 444,
+        },
+      },
+      {
+        cardinality: 'hasOne',
+        name: 'post',
+        type: 'relation',
+        pos: {
+          x: 339,
+          y: 222,
+        },
+      },
+    ]
+
+    const serialized = serializeSchemaToEditor(compiledSchema)
+    const result = mergeSerializedToEditorState(serialized, {
+      nodes: nodesState,
+    })
+
+    // nodes: model
+    expect(result.nodes[0]).toEqual(expectedNodesState[0])
+    expect(result.nodes[1]).toEqual(expectedNodesState[1])
+
+    // nodes: relation
+    expect(result.nodes[2]).toEqual(expectedNodesState[2])
+    expect(result.nodes[3]).toEqual(expectedNodesState[3])
   })
 })
