@@ -18,7 +18,6 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-use": "^15.3.2",
-    "react-window-dimensions": "^1.0.0",
     "recompose": "^0.30.0",
     "redux": "^4.0.5",
     "redux-actions": "2.6.5",

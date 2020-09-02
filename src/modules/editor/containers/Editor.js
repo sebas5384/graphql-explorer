@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose, withHandlers } from 'recompose'
 import { Layer } from 'react-konva'
-import windowDimensions from 'react-window-dimensions'
+import { useWindowSize } from 'react-use'
 
 import Stage from '../../core/containers/StageWithRedux'
 import Node from '../components/Node'
@@ -66,11 +66,12 @@ const edgeIsActive = ({ edgeNodes, selectedNode = {} }) => edgeNodes
 const preventContextmenuEvent = ({ evt }) => evt.preventDefault()
 
 const Editor = ({
-  stage, width, height, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
+  stage, nodes, edges, selectedNode, dispatch, cursorPosition, connector,
   onNodeClick: handleOnNodeClick, onStageClick: handleOnStageClick, handleOnStageContextmenu,
   handleOnNodeDrag, handleOnDoubleClick,
   ...rest
 }) => {
+  const { width, height } = useWindowSize();
   const style = {
     position: 'fixed'
   }
@@ -195,7 +196,6 @@ const mapStateToProps = ({ stage, nodes, edges, connector, contextualDelete }) =
 
 export default compose(
   connect(mapStateToProps),
-  windowDimensions(),
   withHandlers({
     onNodeClick,
     onStageClick,
