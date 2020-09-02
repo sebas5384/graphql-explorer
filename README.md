@@ -4,7 +4,7 @@ GraphQL Explorer is an application that helps you define entities related to you
 
 ## Demo app
 
-Through the following URL you can find a demo app: https://graphql-explorer-rbuvohuudm.now.sh/
+Through the following URL you can find a demo app: https://graphql-explorer.sebas5384.vercel.app/
 
 ## Pre-requirements
 
@@ -41,7 +41,6 @@ You can contribute to this project in the following ways:
 - Fixing bugs or implementing new features
 - Improving the documentation
 - Improving the code structure
-
 
 ### Steps to contribute
 
