@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "babel-runtime": "^6.23.0",
+    "copy-to-clipboard": "^3.3.1",
     "immutable": "^4.0.0-rc.12",
     "is-hotkey": "^0.1.1",
     "konva": "^7.0.2",
