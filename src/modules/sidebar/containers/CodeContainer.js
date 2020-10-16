@@ -1,9 +1,9 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import Card from '../components/Card'
 import styled from 'styled-components'
-import { compose } from 'recompose'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { sort, ascend, prop } from 'ramda'
+import copy from 'copy-to-clipboard';
 
 const Code = styled(Card)`
   padding: 1em 1em 20em;
@@ -28,31 +28,47 @@ const TypeName = styled.span`
   font-style: italic;
 `
 
-const CodeContainer = ({ nodes }) => (
-  <Code>
-    { nodes.map((node, key) => (
-      <Fragment key={ node.name + key }>
-        <FieldNode>
-          <TypeName>{ 'type ' }</TypeName>
-          <FieldName>{ node.name }</FieldName>
-          { ' {' }
-        </FieldNode>
-        { node.fields.map(({ name, type }, key) => (
-          <FieldNode key={ node.name + key }>&nbsp;&nbsp;{ name + ':' }&nbsp;<FieldName>{ type }</FieldName></FieldNode>
-        )) }
-        <FieldNode>{ '}' }</FieldNode>
-        <br />
-      </Fragment>
-    )) }
-  </Code>
-)
+const CopyLabel = styled.p`
+  color: white;
+  padding: 1em;
+  font-size: 12px;
+  background-color: rgba(38,25,58,0.97);
+`
 
-const mapStateToProps = ({ nodes, sidebar }) => {
-  const modelNodes = nodes.filter(({ type }) => type === 'model')
-  const sortedNodes = sort(ascend(prop('name')), modelNodes)
-  return { nodes: sortedNodes, sidebar };
+const CodeContainer = () => {
+  const { nodes } = useSelector(mapStateToProps)
+  const codeRef = useRef()
+
+  const copyToClipboard = () => copy(codeRef.current.textContent)
+
+  return (
+    <Fragment>
+      <CopyLabel>Click in the code to copy to clipboard</CopyLabel>
+
+      <Code ref={codeRef} onClick={copyToClipboard}>
+        { nodes.map((node, key) => (
+          <Fragment key={node.name + key}>
+            <FieldNode>
+              <TypeName>{'type '}</TypeName>
+              <FieldName>{node.name}</FieldName>
+              {' {'}
+            </FieldNode>
+            { node.fields.map(({ name, type }, key) => (
+              <FieldNode key={node.name + key}>&nbsp;&nbsp;{ name + ':'}&nbsp;<FieldName>{type}</FieldName></FieldNode>
+            ))}
+            <FieldNode>{'}'}</FieldNode>
+            <br />
+          </Fragment>
+        ))}
+      </Code>
+    </Fragment>
+  )
 }
 
-export default compose(
-  connect(mapStateToProps)
-)(CodeContainer)
+const mapStateToProps = ({ nodes }) => {
+  const modelNodes = nodes.filter(({ type }) => type === 'model')
+  const sortedNodes = sort(ascend(prop('name')), modelNodes)
+  return { nodes: sortedNodes };
+}
+
+export default CodeContainer
